@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINGO Caller</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 BINGO CALLER 🎯</h1>
+        </header>
+
+        <div class="header-content">
+            <!-- Left Section: Current Result & Controls -->
+            <div class="left-section">
+                <!-- Current Number Display -->
+                <div class="current-number-section">
+                    <div class="current-number-display">
+                        <div id="currentLetter" class="current-letter"></div>
+                        <div id="currentNumber" class="current-number">Ready to Start</div>
+                    </div>
+                    <div class="last-called">
+                        <span>Last Called: </span>
+                        <span id="lastCalled">None</span>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <button id="startPauseBtn" class="btn btn-primary">START</button>
+                    <button id="newGameBtn" class="btn btn-secondary">NEW GAME</button>
+                    <button id="bingoWinnerBtn" class="btn btn-winner">🎉 BINGO!</button>
+                    <div class="interval-control">
+                        <label for="intervalSelect">Interval: </label>
+                        <select id="intervalSelect">
+                            <option value="1">1 second</option>
+                            <option value="2">2 seconds</option>
+                            <option value="3">3 seconds</option>
+                            <option value="4">4 seconds</option>
+                            <option value="5" selected>5 seconds</option>
+                            <option value="6">6 seconds</option>
+                            <option value="7">7 seconds</option>
+                            <option value="8">8 seconds</option>
+                            <option value="9">9 seconds</option>
+                            <option value="10">10 seconds</option>
+                        </select>
+                    </div>
+                    <button id="muteBtn" class="btn btn-mute">🔊</button>
+                </div>
+            </div>
+
+            <!-- Right Section: Statistics -->
+            <div class="right-section">
+                <div class="stats">
+                    <h3>📊 Game Stats</h3>
+                    <div class="stat-item">
+                        <div>Numbers Called</div>
+                        <div><span id="numbersCalledCount">0</span>/75</div>
+                    </div>
+                    <div class="stat-item">
+                        <div>Remaining</div>
+                        <div id="remainingCount">75</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+
+            <!-- BINGO Table -->
+            <div class="bingo-grid-container">
+                <table class="bingo-table">
+                    <thead>
+                        <tr>
+                            <th>B</th>
+                            <th>I</th>
+                            <th>N</th>
+                            <th>G</th>
+                            <th>O</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bingoGrid">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confettiContainer" class="confetti-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

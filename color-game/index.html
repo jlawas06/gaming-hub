@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Dice Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Color Dice Game</h1>
+        
+        <div class="game-section">
+            <div class="dice-container">
+                <div class="dice" id="dice1"></div>
+                <div class="dice" id="dice2"></div>
+                <div class="dice" id="dice3"></div>
+            </div>
+            
+            <div class="controls">
+                <button id="rollDiceBtn">Roll Dice</button>
+                <button id="resetStatsBtn">Reset Stats</button>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <p id="resultMessage"></p>
+        </div>
+        
+        <div class="stats-section">
+            <h3>Color Statistics</h3>
+            <div class="stats-grid">
+                <div class="color-stat red">
+                    <span class="color-name">Red</span>
+                    <span class="color-percent" id="redPercent">0%</span>
+                </div>
+                <div class="color-stat green">
+                    <span class="color-name">Green</span>
+                    <span class="color-percent" id="greenPercent">0%</span>
+                </div>
+                <div class="color-stat blue">
+                    <span class="color-name">Blue</span>
+                    <span class="color-percent" id="bluePercent">0%</span>
+                </div>
+                <div class="color-stat yellow">
+                    <span class="color-name">Yellow</span>
+                    <span class="color-percent" id="yellowPercent">0%</span>
+                </div>
+                <div class="color-stat white">
+                    <span class="color-name">White</span>
+                    <span class="color-percent" id="whitePercent">0%</span>
+                </div>
+                <div class="color-stat pink">
+                    <span class="color-name">Pink</span>
+                    <span class="color-percent" id="pinkPercent">0%</span>
+                </div>
+            </div>
+            <p class="total-rolls">Total Rolls: <span id="totalRolls">0</span></p>
+        </div>
+        
+        <div class="history-section">
+            <h3>Roll History</h3>
+            <ul id="gameHistory"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
