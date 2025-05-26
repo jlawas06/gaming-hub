@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  gaming-hub:
+    build: .
+    ports:
+      - "3002:80"
+    container_name: jl-gaming-hub
+    restart: unless-stopped
+    # volumes:
+      # Optional: Mount for development (uncomment for live reload during development)
+      # - .:/usr/share/nginx/html:ro
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80 
