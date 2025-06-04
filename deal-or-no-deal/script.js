@@ -37,6 +37,7 @@ class DealOrNoDeal {
 
         this.setupEventListeners();
         this.renderCases();
+        this.renderPrizes();
         this.updateMessage("Select your case to begin!");
     }
 
@@ -70,6 +71,34 @@ class DealOrNoDeal {
         });
     }
 
+    renderPrizes() {
+        const prizesGrid = document.querySelector('.prizes-grid');
+        prizesGrid.innerHTML = '';
+
+        // Get unique values and sort them
+        const uniqueValues = [...new Set(this.cases.map(c => c.value))].sort((a, b) => a - b);
+
+        uniqueValues.forEach(value => {
+            const prizeElement = document.createElement('div');
+            prizeElement.className = 'prize-item';
+            
+            // Check if this prize is still available (not opened)
+            const isUnopened = this.cases.some(c => c.value === value && !c.opened);
+            if (isUnopened) {
+                prizeElement.classList.add('unopened');
+            } else {
+                prizeElement.classList.add('opened');
+            }
+
+            const valueElement = document.createElement('div');
+            valueElement.className = 'prize-value';
+            valueElement.textContent = `₱${value}`;
+
+            prizeElement.appendChild(valueElement);
+            prizesGrid.appendChild(prizeElement);
+        });
+    }
+
     selectPlayerCase(caseNumber) {
         this.playerCase = caseNumber;
         this.gameStarted = true;
@@ -91,6 +120,7 @@ class DealOrNoDeal {
 
         this.updateMessage(`Case ${caseNumber} contains ₱${case_.value}!`);
         this.renderCases();
+        this.renderPrizes();
 
         // Check if we're down to 2 cases
         const unopenedCases = this.cases.filter(c => !c.opened);
