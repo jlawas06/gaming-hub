@@ -38,6 +38,7 @@ class DealOrNoDeal {
         this.setupEventListeners();
         this.renderCases();
         this.renderPrizes();
+        this.updateCasesCounter();
         this.updateMessage("Select your case to begin!");
     }
 
@@ -99,6 +100,10 @@ class DealOrNoDeal {
         });
     }
 
+    updateCasesCounter() {
+        document.querySelector('.counter').textContent = this.casesToOpen;
+    }
+
     selectPlayerCase(caseNumber) {
         this.playerCase = caseNumber;
         this.gameStarted = true;
@@ -118,6 +123,7 @@ class DealOrNoDeal {
         this.casesToOpen--;
         this.remainingCases--;
 
+        this.updateCasesCounter();
         this.updateMessage(`Case ${caseNumber} contains ₱${case_.value}!`);
         this.renderCases();
         this.renderPrizes();
@@ -165,6 +171,7 @@ class DealOrNoDeal {
             this.casesToOpen = this.rounds[this.currentRound - 1];
             this.canMakeDeal = false;
             this.unhighlightDealButtons();
+            this.updateCasesCounter();
             
             // Check if we're down to 2 cases
             const unopenedCases = this.cases.filter(c => !c.opened);

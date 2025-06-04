@@ -39,23 +39,22 @@ h1 {
     backdrop-filter: blur(10px);
 }
 
-.current-offer, .player-case {
+.current-offer, .player-case, .cases-counter {
     padding: 0.5rem;
 }
 
-.current-offer h2, .player-case h2 {
+.current-offer h2, .player-case h2, .cases-counter h2 {
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
 }
 
-.offer-amount {
-    font-size: 2rem;
+.offer-amount, .case-number, .counter {
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #4CAF50;
 }
 
-.case-number {
-    font-size: 1.5rem;
+.counter {
+    color: #e74c3c;
 }
 
 .cases-grid {
