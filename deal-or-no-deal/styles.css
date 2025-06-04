@@ -1,0 +1,231 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.game-container {
+    max-width: 1400px;
+    width: 100%;
+    text-align: center;
+    padding: 1.5rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1.25rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.current-offer, .player-case {
+    padding: 0.5rem;
+}
+
+.current-offer h2, .player-case h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.offer-amount {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.case-number {
+    font-size: 1.5rem;
+}
+
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 1.25rem;
+    margin: 2.5rem auto;
+    max-width: 1400px;
+    padding: 0 1.5rem;
+}
+
+.case {
+    background: #2c3e50;
+    border: 4px solid #3498db;
+    border-radius: 12px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    position: relative;
+    min-width: 80px;
+    min-height: 80px;
+    overflow: hidden;
+}
+
+.case .case-number {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    padding: 0 0.25rem;
+}
+
+.case:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
+.case.opened {
+    background: #34495e;
+    border-color: #95a5a6;
+    cursor: not-allowed;
+    color: #95a5a6;
+}
+
+.case.selected {
+    background: #27ae60;
+    border-color: #2ecc71;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.case.selected:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
+}
+
+.case.opened::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+/* Add new styles for selected and opened case */
+.case.selected.opened {
+    background: #27ae60;
+    border-color: #2ecc71;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
+}
+
+.case.selected.opened::after {
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.case.selected::after {
+    content: 'YOURS';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    color: #2ecc71;
+    text-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
+}
+
+.game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.btn.active {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.deal {
+    background: #4CAF50;
+    color: white;
+}
+
+.deal.active {
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+.no-deal {
+    background: #e74c3c;
+    color: white;
+}
+
+.no-deal.active {
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.game-message {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    min-height: 1.8rem;
+}
+
+@media (max-width: 768px) {
+    .game-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .cases-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1rem;
+        padding: 0 0.75rem;
+    }
+
+    .case {
+        font-size: 1rem;
+        padding: 0.75rem;
+        min-width: 60px;
+        min-height: 60px;
+    }
+
+    .case .case-number {
+        font-size: 0.9rem;
+    }
+} 
