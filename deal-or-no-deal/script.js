@@ -15,16 +15,9 @@ class DealOrNoDeal {
     initializeGame() {
         // Create array of values with specific high values and the rest between 0.50 and 20.00
         const highValues = [50, 100, 200];
-        const regularValues = [];
-        
-        // Generate regular values between 0.50 and 20.00
-        for (let i = 0; i < 23; i++) {
-            // Generate random value between 0.50 and 20.00
-            const value = 0.50 + Math.random() * 19.50;
-            // Round to nearest 0.50
-            const roundedValue = Math.round(value * 2) / 2;
-            regularValues.push(roundedValue);
-        }
+        const regularValues = Array.from({length: 23}, (_,i) => 
+            i + 1
+        );
         
         // Combine all values and shuffle them
         const values = [...highValues, ...regularValues];
@@ -62,7 +55,7 @@ class DealOrNoDeal {
         this.cases.forEach(case_ => {
             const caseElement = document.createElement('div');
             caseElement.className = `case ${case_.opened ? 'opened' : ''} ${case_.number === this.playerCase ? 'selected' : ''}`;
-            caseElement.textContent = case_.opened ? `₱${case_.value.toFixed(2)}` : case_.number;
+            caseElement.textContent = case_.opened ? `₱${case_.value}` : case_.number;
             caseElement.dataset.caseNumber = case_.number;
 
             if (!case_.opened) {
@@ -96,7 +89,7 @@ class DealOrNoDeal {
         this.casesToOpen--;
         this.remainingCases--;
 
-        this.updateMessage(`Case ${caseNumber} contains ₱${case_.value.toFixed(2)}!`);
+        this.updateMessage(`Case ${caseNumber} contains ₱${case_.value}!`);
         this.renderCases();
 
         // Check if we're down to 2 cases
@@ -119,22 +112,20 @@ class DealOrNoDeal {
         let offer;
         if (this.remainingCases <= 2) {
             // When only 2 cases remain, offer is based on the average of remaining values
-            offer = averageValue * 0.8; // 80% of the average
+            offer = Math.floor(averageValue * 0.8); // 80% of the average
         } else {
             // Normal offer calculation
             const roundMultiplier = 0.3 + (this.currentRound * 0.1); // Increases with each round
-            offer = averageValue * roundMultiplier;
+            offer = Math.floor(averageValue * roundMultiplier);
         }
         
         // Cap the maximum offer at 50
         const cappedOffer = Math.min(offer, 50);
         
-        // Round to nearest 50 centavos
-        const roundedOffer = Math.round(cappedOffer * 2) / 2;
+        // Round to nearest whole number
+        const roundedOffer = Math.round(cappedOffer);
         
-        // Format the offer to 2 decimal places
-        const formattedOffer = roundedOffer.toFixed(2);
-        document.querySelector('.offer-amount').textContent = `₱${formattedOffer}`;
+        document.querySelector('.offer-amount').textContent = `₱${roundedOffer}`;
         return roundedOffer;
     }
 
@@ -196,10 +187,10 @@ class DealOrNoDeal {
             const playerCase = this.cases.find(c => c.number === this.playerCase);
             if (playerCase) {
                 playerCase.opened = true;
-                this.updateMessage(`Congratulations! You've won ₱${offer.toFixed(2)}! Your case contained ₱${playerCase.value.toFixed(2)}.`);
+                this.updateMessage(`Congratulations! You've won ₱${offer}! Your case contained ₱${playerCase.value}.`);
                 this.renderCases();
             } else {
-                this.updateMessage(`Congratulations! You've won ₱${offer.toFixed(2)}!`);
+                this.updateMessage(`Congratulations! You've won ₱${offer}!`);
             }
             
             this.disableControls();
@@ -242,9 +233,9 @@ class DealOrNoDeal {
         playerCase.opened = true;
         if (otherCase) {
             otherCase.opened = true;
-            this.updateMessage(`Game Over! Your case contained ₱${playerCase.value.toFixed(2)} and the other case contained ₱${otherCase.value.toFixed(2)}!`);
+            this.updateMessage(`Game Over! Your case contained ₱${playerCase.value} and the other case contained ₱${otherCase.value}!`);
         } else {
-            this.updateMessage(`Game Over! Your case contained ₱${playerCase.value.toFixed(2)}!`);
+            this.updateMessage(`Game Over! Your case contained ₱${playerCase.value}!`);
         }
         
         this.renderCases();
