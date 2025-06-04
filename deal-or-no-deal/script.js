@@ -99,7 +99,11 @@ class DealOrNoDeal {
         this.updateMessage(`Case ${caseNumber} contains ₱${case_.value.toFixed(2)}!`);
         this.renderCases();
 
-        if (this.casesToOpen === 0) {
+        // Check if we're down to 2 cases
+        const unopenedCases = this.cases.filter(c => !c.opened);
+        if (unopenedCases.length === 2) {
+            this.finalRound();
+        } else if (this.casesToOpen === 0) {
             this.canMakeDeal = true;
             this.updateBankerOffer();
             this.highlightDealButtons();
@@ -140,20 +144,35 @@ class DealOrNoDeal {
             this.casesToOpen = this.rounds[this.currentRound - 1];
             this.canMakeDeal = false;
             this.unhighlightDealButtons();
-            this.updateMessage(`Round ${this.currentRound}: Open ${this.casesToOpen} cases`);
+            
+            // Check if we're down to 2 cases
+            const unopenedCases = this.cases.filter(c => !c.opened);
+            if (unopenedCases.length === 2) {
+                this.finalRound();
+            } else {
+                this.updateMessage(`Round ${this.currentRound}: Open ${this.casesToOpen} cases`);
+            }
         } else {
             this.finalRound();
         }
     }
 
     finalRound() {
-        // When only 2 cases remain, allow the player to switch cases
         const unopenedCases = this.cases.filter(c => !c.opened);
         if (unopenedCases.length === 2) {
             this.updateMessage("Final round! You can switch your case or keep it. Make your decision!");
-            // Enable the deal/no deal buttons for the final decision
-            document.getElementById('deal-btn').textContent = "KEEP CASE";
-            document.getElementById('no-deal-btn').textContent = "SWITCH CASE";
+            const dealBtn = document.getElementById('deal-btn');
+            const noDealBtn = document.getElementById('no-deal-btn');
+            
+            // Reset button states
+            dealBtn.disabled = false;
+            noDealBtn.disabled = false;
+            dealBtn.textContent = "KEEP CASE";
+            noDealBtn.textContent = "SWITCH CASE";
+            
+            // Remove any existing classes and add active class
+            dealBtn.className = 'btn deal active';
+            noDealBtn.className = 'btn no-deal active';
         } else {
             this.endGame();
         }
