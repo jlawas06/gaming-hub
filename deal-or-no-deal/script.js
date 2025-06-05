@@ -45,9 +45,13 @@ class DealOrNoDeal {
     setupEventListeners() {
         const dealBtn = document.getElementById('deal-btn');
         const noDealBtn = document.getElementById('no-deal-btn');
+        const popupDealBtn = document.getElementById('popup-deal-btn');
+        const popupNoDealBtn = document.getElementById('popup-no-deal-btn');
 
         dealBtn.addEventListener('click', () => this.makeDeal());
         noDealBtn.addEventListener('click', () => this.noDeal());
+        popupDealBtn.addEventListener('click', () => this.makeDeal());
+        popupNoDealBtn.addEventListener('click', () => this.noDeal());
     }
 
     renderCases() {
@@ -110,6 +114,7 @@ class DealOrNoDeal {
         document.getElementById('player-case').textContent = caseNumber;
         this.updateMessage(`You selected case #${caseNumber}. Now open ${this.casesToOpen} cases!`);
         this.renderCases();
+        document.querySelector('.game-controls').style.display = 'none';
     }
 
     openCase(caseNumber) {
@@ -134,9 +139,8 @@ class DealOrNoDeal {
             this.finalRound();
         } else if (this.casesToOpen === 0) {
             this.canMakeDeal = true;
-            this.updateBankerOffer();
-            this.highlightDealButtons();
-            this.updateMessage("Banker's offer is ready! Deal or No Deal?");
+            const offer = this.updateBankerOffer();
+            this.showDealPopup(offer);
         }
     }
 
@@ -201,8 +205,32 @@ class DealOrNoDeal {
             // Remove any existing classes and add active class
             dealBtn.className = 'btn deal active';
             noDealBtn.className = 'btn no-deal active';
+            document.querySelector('.game-controls').style.display = 'flex';
         } else {
             this.endGame();
+        }
+    }
+
+    showDealPopup(offer) {
+        const popup = document.getElementById('deal-popup');
+        const popupOffer = popup.querySelector('.popup-offer');
+        const gameControls = document.querySelector('.game-controls');
+        
+        popupOffer.textContent = `₱${offer}`;
+        popup.classList.add('active');
+        gameControls.style.display = 'none';
+    }
+
+    hideDealPopup() {
+        const popup = document.getElementById('deal-popup');
+        const gameControls = document.querySelector('.game-controls');
+        popup.classList.remove('active');
+        // Only show if not game over AND exactly 2 cases left (final round)
+        const unopenedCases = this.cases.filter(c => !c.opened);
+        if (!this.gameOver && unopenedCases.length === 2) {
+            gameControls.style.display = 'flex';
+        } else {
+            gameControls.style.display = 'none';
         }
     }
 
@@ -212,6 +240,7 @@ class DealOrNoDeal {
             return;
         }
 
+        this.hideDealPopup();
         const unopenedCases = this.cases.filter(c => !c.opened);
         if (unopenedCases.length === 2) {
             // Final round - keep current case
@@ -240,6 +269,7 @@ class DealOrNoDeal {
             return;
         }
 
+        this.hideDealPopup();
         const unopenedCases = this.cases.filter(c => !c.opened);
         if (unopenedCases.length === 2) {
             // Final round - switch cases
@@ -248,8 +278,6 @@ class DealOrNoDeal {
             document.getElementById('player-case').textContent = this.playerCase;
             this.renderCases();
             this.endGame();
-        } else if (this.casesToOpen > 0) {
-            this.updateMessage(`Please open ${this.casesToOpen} more case${this.casesToOpen > 1 ? 's' : ''}`);
         } else {
             this.nextRound();
         }
