@@ -9,18 +9,21 @@ class DealOrNoDeal {
         this.gameOver = false;
         this.gameStarted = false;
         this.canMakeDeal = false;
+        this.defaultHighValues = [50, 100, 200];
+        this.defaultRegularValues = Array.from({length: 23}, (_,i) => i + 1);
+        // Load settings from localStorage if available
+        const savedHigh = localStorage.getItem('deal_highValues');
+        const savedRegular = localStorage.getItem('deal_regularValues');
+        this.highValues = savedHigh ? JSON.parse(savedHigh) : [...this.defaultHighValues];
+        this.regularValues = savedRegular ? JSON.parse(savedRegular) : [...this.defaultRegularValues];
+        this.setupEventListeners();
+        this.initializeSettings();
         this.initializeGame();
     }
 
     initializeGame() {
         // Create array of values with specific high values and the rest between 0.50 and 20.00
-        const highValues = [50, 100, 200];
-        const regularValues = Array.from({length: 23}, (_,i) => 
-            i + 1
-        );
-        
-        // Combine all values and shuffle them
-        const values = [...highValues, ...regularValues];
+        const values = [...this.highValues, ...this.regularValues];
         
         // Shuffle the values
         for (let i = values.length - 1; i > 0; i--) {
@@ -35,7 +38,6 @@ class DealOrNoDeal {
             opened: false
         }));
 
-        this.setupEventListeners();
         this.renderCases();
         this.renderPrizes();
         this.updateCasesCounter();
@@ -47,11 +49,82 @@ class DealOrNoDeal {
         const noDealBtn = document.getElementById('no-deal-btn');
         const popupDealBtn = document.getElementById('popup-deal-btn');
         const popupNoDealBtn = document.getElementById('popup-no-deal-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const saveSettingsBtn = document.getElementById('save-settings');
+        const cancelSettingsBtn = document.getElementById('cancel-settings');
+        const restoreDefaultsBtn = document.getElementById('restore-defaults');
 
         dealBtn.addEventListener('click', () => this.makeDeal());
         noDealBtn.addEventListener('click', () => this.noDeal());
         popupDealBtn.addEventListener('click', () => this.makeDeal());
         popupNoDealBtn.addEventListener('click', () => this.noDeal());
+        settingsBtn.addEventListener('click', () => this.showSettingsPopup());
+        saveSettingsBtn.addEventListener('click', () => this.saveSettings());
+        cancelSettingsBtn.addEventListener('click', () => this.hideSettingsPopup());
+        restoreDefaultsBtn.addEventListener('click', () => this.restoreDefaults());
+    }
+
+    initializeSettings() {
+        // Create regular prize inputs
+        const regularPrizesContainer = document.querySelector('.regular-prizes');
+        regularPrizesContainer.innerHTML = '';
+        
+        this.regularValues.forEach((value, index) => {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'prize-input';
+            input.value = value;
+            input.min = '1';
+            regularPrizesContainer.appendChild(input);
+        });
+
+        // Set high value prize inputs
+        const highValueInputs = document.querySelectorAll('.prize-input-group:not(.regular-prizes) .prize-input');
+        this.highValues.forEach((value, index) => {
+            highValueInputs[index].value = value;
+        });
+    }
+
+    showSettingsPopup() {
+        if (this.gameStarted) {
+            this.updateMessage("Cannot change settings during a game!");
+            return;
+        }
+        const popup = document.getElementById('settings-popup');
+        popup.classList.add('active');
+    }
+
+    hideSettingsPopup() {
+        const popup = document.getElementById('settings-popup');
+        popup.classList.remove('active');
+    }
+
+    saveSettings() {
+        // Get high value prizes
+        const highValueInputs = document.querySelectorAll('.prize-input-group:not(.regular-prizes) .prize-input');
+        this.highValues = Array.from(highValueInputs).map(input => parseInt(input.value) || 1);
+
+        // Get regular prizes
+        const regularInputs = document.querySelectorAll('.regular-prizes .prize-input');
+        this.regularValues = Array.from(regularInputs).map(input => parseInt(input.value) || 1);
+
+        // Persist to localStorage
+        localStorage.setItem('deal_highValues', JSON.stringify(this.highValues));
+        localStorage.setItem('deal_regularValues', JSON.stringify(this.regularValues));
+
+        // Reset game state
+        this.playerCase = null;
+        this.remainingCases = 26;
+        this.currentRound = 1;
+        this.casesToOpen = this.rounds[0];
+        this.gameOver = false;
+        this.gameStarted = false;
+        this.canMakeDeal = false;
+
+        // Reinitialize the game with new values
+        this.initializeGame();
+        this.hideSettingsPopup();
+        this.updateMessage("Settings saved! Select your case to begin!");
     }
 
     renderCases() {
@@ -80,25 +153,19 @@ class DealOrNoDeal {
         const prizesGrid = document.querySelector('.prizes-grid');
         prizesGrid.innerHTML = '';
 
-        // Get unique values and sort them
-        const uniqueValues = [...new Set(this.cases.map(c => c.value))].sort((a, b) => a - b);
-
-        uniqueValues.forEach(value => {
+        // Show all prizes (including duplicates), sorted by value
+        const sortedCases = [...this.cases].sort((a, b) => a.value - b.value);
+        sortedCases.forEach((case_, idx) => {
             const prizeElement = document.createElement('div');
             prizeElement.className = 'prize-item';
-            
-            // Check if this prize is still available (not opened)
-            const isUnopened = this.cases.some(c => c.value === value && !c.opened);
-            if (isUnopened) {
+            if (!case_.opened) {
                 prizeElement.classList.add('unopened');
             } else {
                 prizeElement.classList.add('opened');
             }
-
             const valueElement = document.createElement('div');
             valueElement.className = 'prize-value';
-            valueElement.textContent = `₱${value}`;
-
+            valueElement.textContent = `₱${case_.value}`;
             prizeElement.appendChild(valueElement);
             prizesGrid.appendChild(prizeElement);
         });
@@ -328,6 +395,28 @@ class DealOrNoDeal {
         const noDealBtn = document.getElementById('no-deal-btn');
         dealBtn.classList.remove('active');
         noDealBtn.classList.remove('active');
+    }
+
+    restoreDefaults() {
+        // Reset values to defaults
+        this.highValues = [...this.defaultHighValues];
+        this.regularValues = [...this.defaultRegularValues];
+        // Remove from localStorage
+        localStorage.removeItem('deal_highValues');
+        localStorage.removeItem('deal_regularValues');
+        // Update the settings popup inputs
+        this.initializeSettings();
+        // Reset game state
+        this.playerCase = null;
+        this.remainingCases = 26;
+        this.currentRound = 1;
+        this.casesToOpen = this.rounds[0];
+        this.gameOver = false;
+        this.gameStarted = false;
+        this.canMakeDeal = false;
+        // Reinitialize the game
+        this.initializeGame();
+        this.updateMessage("Defaults restored! Select your case to begin!");
     }
 }
 

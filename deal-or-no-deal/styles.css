@@ -414,4 +414,183 @@ h1 {
     .case .case-number {
         font-size: 0.9rem;
     }
+}
+
+.btn.settings {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #4a4a4a;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn.settings:hover {
+    background-color: #666;
+}
+
+.settings-form {
+    padding: 20px;
+}
+
+.prize-inputs {
+    margin-bottom: 20px;
+}
+
+.prize-list-input {
+    margin-bottom: 15px;
+}
+
+.prize-list-input label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.prize-input-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.prize-input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.regular-prizes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.settings-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* --- Settings Popup Fixes --- */
+#settings-popup .popup-content {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    background: #222;
+    border-radius: 16px;
+    padding: 32px 24px 24px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    color: #fff;
+    position: relative;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+#settings-popup h2 {
+    color: #ffd600;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+#settings-popup h3 {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+#settings-popup label {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+.prize-input-group.regular-prizes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.prize-input-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.prize-input {
+    width: 100%;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: #333;
+    color: #fff;
+}
+.settings-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+}
+#save-settings {
+    background: #27d940;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(39,217,64,0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+#save-settings:hover {
+    background: #1fa331;
+    box-shadow: 0 4px 16px rgba(39,217,64,0.25);
+}
+#cancel-settings {
+    background: #ff3b3b;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(255,59,59,0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+#cancel-settings:hover {
+    background: #c82323;
+    box-shadow: 0 4px 16px rgba(255,59,59,0.25);
+}
+#restore-defaults {
+    background: #3498db;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.15);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+#restore-defaults:hover {
+    background: #217dbb;
+    box-shadow: 0 4px 16px rgba(52,152,219,0.25);
+}
+/* --- End Settings Popup Fixes --- */
+
+#save-settings, #cancel-settings {
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 18px;
 } 
