@@ -48,6 +48,7 @@
                         </select>
                     </div>
                     <button id="muteBtn" class="btn btn-mute">🔊</button>
+                    <button id="settingsBtn" class="btn btn-settings">⚙️</button>
                 </div>
             </div>
 
@@ -93,6 +94,46 @@
 
     <!-- Confetti Container -->
     <div id="confettiContainer" class="confetti-container"></div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <h3>Speech Settings</h3>
+                    <div class="setting-item">
+                        <label for="speechRate">Speech Rate:</label>
+                        <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="0.9">
+                        <span class="value-display">0.9</span>
+                    </div>
+                    <div class="setting-item">
+                        <label for="speechPitch">Speech Pitch:</label>
+                        <input type="range" id="speechPitch" min="0.5" max="2" step="0.1" value="1">
+                        <span class="value-display">1.0</span>
+                    </div>
+                    <div class="setting-item">
+                        <label for="speechVolume">Speech Volume:</label>
+                        <input type="range" id="speechVolume" min="0" max="1" step="0.1" value="1">
+                        <span class="value-display">1.0</span>
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h3>Game Settings</h3>
+                    <div class="setting-item">
+                        <label for="defaultInterval">Default Interval (seconds):</label>
+                        <input type="number" id="defaultInterval" min="1" max="10" value="5">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveSettings" class="btn btn-primary">Save Settings</button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
