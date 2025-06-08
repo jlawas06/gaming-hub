@@ -1,13 +1,11 @@
 class BingoCaller {
     constructor() {
-        this.numbers = new Set();
         this.calledNumbers = new Set();
         this.availableNumbers = new Set();
         this.currentNumber = null;
         this.lastNumber = null;
         this.isPlaying = false;
-        this.intervalId = null;
-        this.isMuted = false;
+        this.timeoutId = null;  // Add timeout ID tracking
 
         // Load settings from localStorage or use defaults
         this.settings = {
@@ -253,7 +251,7 @@ class BingoCaller {
     }
 
     speakNumber(letter, number) {
-        if (this.isMuted || !('speechSynthesis' in window)) return Promise.resolve();
+        if (!('speechSynthesis' in window)) return Promise.resolve();
 
         // Cancel any ongoing speech
         speechSynthesis.cancel();
@@ -298,15 +296,15 @@ class BingoCaller {
         
         // Set up recursive function for subsequent numbers
         const callNextNumber = async () => {
-            console.log({interval: this.interval})
             if (!this.isPlaying) return;
             
             const nextNumber = this.getRandomNumber();
             if (nextNumber) {
                 await this.callNumber(nextNumber);
-                // Wait for the specified interval
-                await new Promise(resolve => setTimeout(resolve, this.interval));
-                callNextNumber();
+                // Only schedule next call if still playing
+                if (this.isPlaying) {
+                    this.timeoutId = setTimeout(callNextNumber, this.interval);
+                }
             } else {
                 this.pauseGame();
             }
@@ -320,10 +318,11 @@ class BingoCaller {
         this.isPlaying = false;
         this.elements.startPauseBtn.textContent = 'START';
         this.elements.startPauseBtn.style.background = 'linear-gradient(135deg, #00b09b, #96c93d)';
-
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
+        
+        // Clear any pending timeout
+        if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
         }
     }
 
@@ -336,6 +335,7 @@ class BingoCaller {
         this.availableNumbers.clear();
         this.currentNumber = null;
         this.lastNumber = null;
+        this.timeoutId = null;  // Reset timeout ID
 
         // Reinitialize available numbers
         for (let i = 1; i <= 75; i++) {
@@ -369,19 +369,15 @@ class BingoCaller {
     }
 
     toggleMute() {
-        this.isMuted = !this.isMuted;
-        this.elements.muteBtn.textContent = this.isMuted ? '🔇' : '🔊';
-
-        if (this.isMuted && 'speechSynthesis' in window) {
-            speechSynthesis.cancel();
-        }
+        const isMuted = this.elements.muteBtn.classList.toggle('muted');
+        this.elements.muteBtn.textContent = isMuted ? '🔊' : '🔇';
     }
 
     gameComplete() {
         this.pauseGame();
 
         // Speak game complete message
-        if (!this.isMuted && 'speechSynthesis' in window) {
+        if ('speechSynthesis' in window) {
             setTimeout(() => {
                 const utterance = new SpeechSynthesisUtterance('Bingo game complete! All numbers have been called.');
                 utterance.rate = 0.7;
@@ -420,68 +416,39 @@ class BingoCaller {
         const container = this.elements.confettiContainer;
         container.innerHTML = ''; // Clear existing confetti
 
-        // Create 300 confetti pieces for more spectacular effect
-        for (let i = 0; i < 300; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti-piece';
-
-            // Random horizontal position
-            confetti.style.left = Math.random() * 100 + '%';
-
-            // Random animation duration (1.5-5 seconds for more variety)
-            confetti.style.animationDuration = (Math.random() * 3.5 + 1.5) + 's';
-
-            // Random delay (0-3 seconds for staggered effect)
-            confetti.style.animationDelay = Math.random() * 3 + 's';
-
-            // Random size with more variety
-            const size = Math.random() * 12 + 4; // 4-16px
-            confetti.style.width = size + 'px';
-            confetti.style.height = size + 'px';
-
-            // Add some random rotation for more dynamic effect
-            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-            container.appendChild(confetti);
-        }
-
-        // Create additional burst of confetti after 1 second
-        setTimeout(() => {
-            for (let i = 0; i < 150; i++) {
+        // Create a document fragment for better performance
+        const fragment = document.createDocumentFragment();
+        
+        // Create all confetti pieces at once
+        const createConfettiBatch = (count, delay = 0) => {
+            for (let i = 0; i < count; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti-piece';
-
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                confetti.style.animationDelay = '0s'; // Immediate start for second burst
-
-                const size = Math.random() * 10 + 5;
-                confetti.style.width = size + 'px';
-                confetti.style.height = size + 'px';
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-                container.appendChild(confetti);
+                
+                // Random properties
+                const size = Math.random() * 12 + 4; // 4-16px
+                const duration = Math.random() * 3.5 + 1.5; // 1.5-5s
+                
+                Object.assign(confetti.style, {
+                    left: `${Math.random() * 100}%`,
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    animationDuration: `${duration}s`,
+                    animationDelay: `${delay}s`,
+                    transform: `rotate(${Math.random() * 360}deg)`
+                });
+                
+                fragment.appendChild(confetti);
             }
-        }, 1000);
+        };
 
-        // Create third burst after 2 seconds
-        setTimeout(() => {
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti-piece';
+        // Create three batches of confetti with different delays
+        createConfettiBatch(300, 0); // Initial burst
+        createConfettiBatch(150, 1); // Second burst
+        createConfettiBatch(100, 2); // Third burst
 
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.animationDuration = (Math.random() * 2.5 + 1.5) + 's';
-                confetti.style.animationDelay = '0s';
-
-                const size = Math.random() * 8 + 6;
-                confetti.style.width = size + 'px';
-                confetti.style.height = size + 'px';
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-                container.appendChild(confetti);
-            }
-        }, 2000);
+        // Add all confetti to the container at once
+        container.appendChild(fragment);
     }
 
     showWinnerMessage() {
@@ -500,7 +467,7 @@ class BingoCaller {
     }
 
     speakCongratulations() {
-        if (this.isMuted || !('speechSynthesis' in window)) return;
+        if (!('speechSynthesis' in window)) return;
 
         // Cancel any ongoing speech
         speechSynthesis.cancel();
