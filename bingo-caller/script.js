@@ -303,7 +303,7 @@ class BingoCaller {
                 await this.callNumber(nextNumber);
                 // Only schedule next call if still playing
                 if (this.isPlaying) {
-                    this.timeoutId = setTimeout(callNextNumber, this.interval);
+                    this.timeoutId = setTimeout(callNextNumber, Math.max(0, this.interval - 1000));
                 }
             } else {
                 this.pauseGame();
