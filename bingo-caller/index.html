@@ -12,9 +12,9 @@
             <h1>🎯 BINGO CALLER 🎯</h1>
         </header>
 
-        <div class="header-content">
+        <div class="main-layout">
             <!-- Left Section: Current Result & Controls -->
-            <div class="left-section">
+            <div class="left-panel">
                 <!-- Current Number Display -->
                 <div class="current-number-section">
                     <div class="current-number-display">
@@ -29,31 +29,58 @@
 
                 <!-- Controls -->
                 <div class="controls">
-                    <button id="startPauseBtn" class="btn btn-primary">START</button>
-                    <button id="newGameBtn" class="btn btn-secondary">NEW GAME</button>
-                    <button id="bingoWinnerBtn" class="btn btn-winner">🎉 BINGO!</button>
-                    <div class="interval-control">
-                        <label for="intervalSelect">Interval: </label>
-                        <select id="intervalSelect">
-                            <option value="1">1 second</option>
-                            <option value="2">2 seconds</option>
-                            <option value="3">3 seconds</option>
-                            <option value="4">4 seconds</option>
-                            <option value="5" selected>5 seconds</option>
-                            <option value="6">6 seconds</option>
-                            <option value="7">7 seconds</option>
-                            <option value="8">8 seconds</option>
-                            <option value="9">9 seconds</option>
-                            <option value="10">10 seconds</option>
-                        </select>
+                    <div class="main-controls">
+                        <button id="startPauseBtn" class="btn btn-primary">START</button>
+                        <button id="newGameBtn" class="btn btn-secondary">NEW GAME</button>
+                        <button id="bingoWinnerBtn" class="btn btn-winner">🎉 BINGO!</button>
                     </div>
-                    <button id="muteBtn" class="btn btn-mute">🔊</button>
-                    <button id="settingsBtn" class="btn btn-settings">⚙️</button>
+                    
+                    <div class="secondary-controls">
+                        <div class="interval-control">
+                            <label for="intervalSelect">Interval: </label>
+                            <select id="intervalSelect">
+                                <option value="1">1 second</option>
+                                <option value="2">2 seconds</option>
+                                <option value="3">3 seconds</option>
+                                <option value="4">4 seconds</option>
+                                <option value="5" selected>5 seconds</option>
+                                <option value="6">6 seconds</option>
+                                <option value="7">7 seconds</option>
+                                <option value="8">8 seconds</option>
+                                <option value="9">9 seconds</option>
+                                <option value="10">10 seconds</option>
+                            </select>
+                        </div>
+                        <div class="control-buttons">
+                            <button id="muteBtn" class="btn btn-mute">🔊</button>
+                            <button id="settingsBtn" class="btn btn-settings">⚙️</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Section: Statistics -->
-            <div class="right-section">
+            <!-- Center Section: BINGO Table -->
+            <div class="center-panel">
+                <div class="bingo-grid-container">
+                    <table class="bingo-table">
+                        <thead>
+                            <tr>
+                                <th>B</th>
+                                <th>I</th>
+                                <th>N</th>
+                                <th>G</th>
+                                <th>O</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bingoGrid">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Section: Game Statistics -->
+            <div class="right-panel">
                 <div class="stats">
                     <h3>📊 Game Stats</h3>
                     <div class="stat-item">
@@ -65,30 +92,14 @@
                         <div id="remainingCount">75</div>
                     </div>
                 </div>
+                
+                <div class="call-logs">
+                    <h3>📋 Call History</h3>
+                    <div class="logs-container" id="callLogsContainer">
+                        <div class="no-logs">No numbers called yet</div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="main-content">
-
-            <!-- BINGO Table -->
-            <div class="bingo-grid-container">
-                <table class="bingo-table">
-                    <thead>
-                        <tr>
-                            <th>B</th>
-                            <th>I</th>
-                            <th>N</th>
-                            <th>G</th>
-                            <th>O</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bingoGrid">
-                        <!-- Table rows will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-
-
         </div>
     </div>
 

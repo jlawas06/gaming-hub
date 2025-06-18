@@ -6,6 +6,7 @@ class BingoCaller {
         this.lastNumber = null;
         this.isPlaying = false;
         this.timeoutId = null;  // Add timeout ID tracking
+        this.callSequence = 0;  // Track sequence of called numbers
 
         // Load settings from localStorage or use defaults
         this.settings = {
@@ -48,6 +49,7 @@ class BingoCaller {
             numbersCalledCount: document.getElementById('numbersCalledCount'),
             remainingCount: document.getElementById('remainingCount'),
             confettiContainer: document.getElementById('confettiContainer'),
+            callLogsContainer: document.getElementById('callLogsContainer'),
             settingsBtn: document.getElementById('settingsBtn'),
             settingsModal: document.getElementById('settingsModal'),
             closeBtn: document.querySelector('.close-btn'),
@@ -219,6 +221,9 @@ class BingoCaller {
         // Update statistics
         this.updateStats();
         
+        // Add to call log
+        this.addToCallLog(letter, number);
+        
         // Speak the number and wait for it to complete
         await this.speakNumber(letter, number);
         
@@ -248,6 +253,54 @@ class BingoCaller {
     updateStats() {
         this.elements.numbersCalledCount.textContent = this.calledNumbers.size;
         this.elements.remainingCount.textContent = this.availableNumbers.size;
+    }
+
+    addToCallLog(letter, number) {
+        // Remove "no logs" message if it exists
+        const noLogsMsg = this.elements.callLogsContainer.querySelector('.no-logs');
+        if (noLogsMsg) {
+            noLogsMsg.remove();
+        }
+
+        // Increment sequence counter
+        this.callSequence++;
+
+        // Create log entry
+        const logEntry = document.createElement('div');
+        logEntry.className = 'log-entry';
+        
+        // Main number display
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'log-number';
+        numberSpan.textContent = number;
+        
+        // Sequence number display
+        const sequenceSpan = document.createElement('span');
+        sequenceSpan.className = 'log-sequence';
+        sequenceSpan.textContent = `#${this.callSequence}`;
+        
+        logEntry.appendChild(numberSpan);
+        logEntry.appendChild(sequenceSpan);
+        
+        // Remove highlight from previous latest entry
+        const previousLatest = this.elements.callLogsContainer.querySelector('.log-entry.latest');
+        if (previousLatest) {
+            previousLatest.classList.remove('latest');
+        }
+        
+        // Add highlight to new entry
+        logEntry.classList.add('latest');
+        
+        // Add to top of logs (most recent first)
+        this.elements.callLogsContainer.insertBefore(logEntry, this.elements.callLogsContainer.firstChild);
+        
+        // Auto-scroll to top to show the latest entry
+        this.elements.callLogsContainer.scrollTop = 0;
+    }
+
+    clearCallLog() {
+        this.elements.callLogsContainer.innerHTML = '<div class="no-logs">No numbers called yet</div>';
+        this.callSequence = 0; // Reset sequence counter
     }
 
     speakNumber(letter, number) {
@@ -358,6 +411,9 @@ class BingoCaller {
 
         // Reset stats
         this.updateStats();
+
+        // Clear call log
+        this.clearCallLog();
 
         // Cancel any ongoing speech
         if ('speechSynthesis' in window) {
