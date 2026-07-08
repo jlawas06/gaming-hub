@@ -231,9 +231,27 @@
     font-size: 13px;
   }
 
+  .back-link {
+    position: fixed;
+    top: 16px;
+    left: 18px;
+    z-index: 50;
+    color: #cdeadf;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .back-link:hover { color: #fff; }
+
+  .back-link:focus-visible {
+    outline: 3px solid #cdeadf;
+    outline-offset: 2px;
+  }
+
   @media print {
     body { background: #fff; color: #000; padding: 0; }
-    header, .controls, footer { display: none; }
+    header, .controls, footer, .back-link { display: none; }
     .cards { gap: 16px; }
     .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
     .cell { cursor: default; }
@@ -241,6 +259,7 @@
 </style>
 </head>
 <body>
+  <a href="../" class="back-link">&larr; All booths</a>
   <header>
     <div class="wordmark">
       <span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>

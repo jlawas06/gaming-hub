@@ -458,3 +458,24 @@ h1 {
         animation: none;
     }
 }
+
+/* Back to hub */
+.back-link {
+    position: fixed;
+    top: 42px;
+    left: 18px;
+    z-index: 50;
+    color: rgba(251, 243, 226, 0.7);
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.back-link:hover {
+    color: var(--bulb);
+}
+
+.back-link:focus-visible {
+    outline: 3px solid var(--bulb);
+    outline-offset: 2px;
+}

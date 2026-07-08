@@ -1,3 +1,32 @@
+/* ==========================================================================
+   Deal or No Deal — the game-show booth of the JL Gaming Hub midway.
+   Night backdrop, claret-and-gold studio, silver briefcases, and a
+   two-column money board like the show's.
+   ========================================================================== */
+
+:root {
+    --night: #201038;
+    --night-deep: #150a26;
+    --night-glow: #35204f;
+    --canvas: #fbf3e2;
+    --ink: #3a2415;
+    --bulb: #ffc857;
+    --bulb-deep: #b97b1a;
+    --felt: #1d6f4c;
+    --felt-deep: #124a33;
+    --claret: #a32638;
+    --claret-deep: #741a28;
+
+    /* Briefcase metal */
+    --case-hi: #e3e8f0;
+    --case-lo: #97a1b2;
+    --case-edge: #6d7684;
+    --case-ink: #2b3242;
+
+    --font-display: 'Alfa Slab One', 'Arial Black', sans-serif;
+    --font-body: 'Nunito', 'Trebuchet MS', sans-serif;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,324 +34,391 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #fff;
-    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--canvas);
+    background:
+        radial-gradient(ellipse 120% 50% at 50% -10%, var(--night-glow), transparent 70%),
+        linear-gradient(var(--night), var(--night-deep));
+    background-color: var(--night-deep);
+    min-height: 100dvh;
+}
+
+.studio {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0.75rem 1.25rem 1.5rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-}
-
-.game-container {
-    max-width: 1400px;
-    width: 100%;
-    text-align: center;
-    padding: 1.5rem;
-}
-
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-    color: #ffd700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-}
-
-.game-info {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1.25rem;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-}
-
-.current-offer, .player-case, .cases-counter {
-    padding: 0.5rem;
-}
-
-.current-offer h2, .player-case h2, .cases-counter h2 {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-}
-
-.offer-amount, .case-number, .counter {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.counter {
-    color: #e74c3c;
-}
-
-.cases-grid {
-    display: grid;
-    grid-template-columns: repeat(13, 1fr);
-    gap: 1.25rem;
-    margin: 2.5rem auto;
-    max-width: 1400px;
-    padding: 0 1.5rem;
-}
-
-.case {
-    background: #2c3e50;
-    border: 4px solid #3498db;
-    border-radius: 12px;
-    padding: 1.25rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    aspect-ratio: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    position: relative;
-    min-width: 80px;
-    min-height: 80px;
-    overflow: hidden;
-}
-
-.case .case-number {
-    font-size: 1.1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    padding: 0 0.25rem;
-}
-
-.case:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
-}
-
-.case.opened {
-    background: #34495e;
-    border-color: #95a5a6;
-    cursor: not-allowed;
-    color: #95a5a6;
-}
-
-.case.selected {
-    background: #27ae60;
-    border-color: #2ecc71;
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
-}
-
-.case.selected:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
-}
-
-.case.opened::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
-}
-
-/* Add new styles for selected and opened case */
-.case.selected.opened {
-    background: #27ae60;
-    border-color: #2ecc71;
-    color: #fff;
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
-}
-
-.case.selected.opened::after {
-    background: rgba(46, 204, 113, 0.2);
-}
-
-.case.selected::after {
-    content: 'YOURS';
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.6rem;
-    color: #2ecc71;
-    text-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
-}
-
-.game-controls {
-    display: none;
-    justify-content: center;
+    flex-direction: column;
     gap: 1rem;
-    margin: 2rem 0 1rem 0;
 }
 
-.btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Top bar ---------------------------------------------------------------- */
+
+.topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-link {
+    justify-self: start;
+    color: rgba(251, 243, 226, 0.7);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    color: var(--bulb);
+}
+
+.studio-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.25rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0.7;
+    color: var(--bulb);
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+    text-align: center;
 }
 
-.btn.active {
-    opacity: 1;
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+.topbar-actions {
+    justify-self: end;
 }
 
-.deal {
-    background: #4CAF50;
-    color: white;
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(251, 243, 226, 0.3);
+    background: rgba(251, 243, 226, 0.08);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.deal.active {
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+.icon-btn:hover {
+    background: rgba(251, 243, 226, 0.18);
+    border-color: var(--bulb);
 }
 
-.no-deal {
-    background: #e74c3c;
-    color: white;
-}
-
-.no-deal.active {
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
-}
-
-.btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
+/* Host line ---------------------------------------------------------------- */
 
 .game-message {
-    font-size: 1.2rem;
-    margin-top: 1rem;
-    min-height: 1.8rem;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--bulb);
+    min-height: 1.6rem;
 }
+
+/* Podiums ------------------------------------------------------------------- */
+
+.game-info {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.podium {
+    text-align: center;
+    background: linear-gradient(170deg, var(--claret), var(--claret-deep));
+    border: 1px solid rgba(255, 200, 87, 0.4);
+    border-radius: 14px;
+    padding: 0.8rem 0.75rem 0.9rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.podium h2 {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(251, 243, 226, 0.75);
+    margin-bottom: 0.35rem;
+}
+
+.offer-amount,
+.case-label,
+.counter {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    line-height: 1.1;
+    color: var(--bulb);
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.case-label,
+.counter {
+    color: var(--canvas);
+}
+
+/* Layout ---------------------------------------------------------------------- */
 
 .game-content {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: flex-start;
 }
 
 .game-main {
     flex: 1;
+    min-width: 0;
 }
 
+/* Briefcases --------------------------------------------------------------------- */
+
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 14px;
+    row-gap: 22px;
+    padding-top: 12px;
+}
+
+.case {
+    position: relative;
+    aspect-ratio: 1 / 0.92;
+    border: none;
+    border-radius: 8px 8px 10px 10px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 30%),
+        linear-gradient(160deg, var(--case-hi), var(--case-lo));
+    box-shadow:
+        inset 0 0 0 2px var(--case-edge),
+        inset 0 -6px 0 rgba(0, 0, 0, 0.15),
+        0 6px 14px rgba(0, 0, 0, 0.4);
+    font-family: var(--font-display);
+    font-size: clamp(0.9rem, 1.6vw, 1.35rem);
+    color: var(--case-ink);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* The handle */
+.case::before {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38%;
+    height: 12px;
+    border: 3px solid var(--case-edge);
+    border-bottom: none;
+    border-radius: 7px 7px 0 0;
+}
+
+.case:hover:not(:disabled):not(.opened) {
+    transform: translateY(-4px);
+    box-shadow:
+        inset 0 0 0 2px var(--bulb-deep),
+        inset 0 -6px 0 rgba(0, 0, 0, 0.15),
+        0 0 0 2px var(--bulb),
+        0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.case.opened {
+    background: linear-gradient(170deg, #2c1b45, #1c1030);
+    box-shadow:
+        inset 0 0 0 2px rgba(251, 243, 226, 0.15),
+        0 4px 10px rgba(0, 0, 0, 0.3);
+    color: var(--bulb);
+    font-size: clamp(0.75rem, 1.3vw, 1.05rem);
+    cursor: default;
+}
+
+.case.opened::before {
+    border-color: rgba(251, 243, 226, 0.2);
+}
+
+.case.selected {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.45), transparent 30%),
+        linear-gradient(160deg, var(--bulb), var(--bulb-deep));
+    box-shadow:
+        inset 0 0 0 2px var(--bulb-deep),
+        inset 0 -6px 0 rgba(0, 0, 0, 0.15),
+        0 0 18px rgba(255, 200, 87, 0.45),
+        0 6px 14px rgba(0, 0, 0, 0.4);
+    color: var(--ink);
+}
+
+.case.selected::before {
+    border-color: var(--bulb-deep);
+}
+
+.case.selected::after {
+    content: 'YOURS';
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--bulb);
+}
+
+.case.selected.opened {
+    color: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .case.revealed {
+        animation: case-reveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes case-reveal {
+        0% { transform: rotateX(90deg) scale(0.8); }
+        100% { transform: rotateX(0deg) scale(1); }
+    }
+}
+
+/* Deal / No deal ------------------------------------------------------------------- */
+
+.game-controls {
+    display: none;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.75rem;
+}
+
+.btn {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.6rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--canvas);
+    background: linear-gradient(var(--btn-a, var(--felt)), var(--btn-b, var(--felt-deep)));
+    box-shadow: 0 4px 0 var(--btn-b, var(--felt-deep));
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--btn-b, var(--felt-deep)), 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--btn-b, var(--felt-deep));
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.deal { --btn-a: var(--felt); --btn-b: var(--felt-deep); }
+
+.no-deal { --btn-a: var(--claret); --btn-b: var(--claret-deep); }
+
+.btn-plain {
+    background: transparent;
+    border: 2px solid rgba(58, 36, 21, 0.35);
+    box-shadow: none;
+    color: var(--ink);
+}
+
+.btn-plain:hover:not(:disabled) {
+    border-color: var(--ink);
+    background: rgba(58, 36, 21, 0.08);
+    box-shadow: none;
+}
+
+/* Money board ----------------------------------------------------------------------- */
+
 .prize-list {
-    width: 320px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 280px;
+    flex-shrink: 0;
+    background: linear-gradient(170deg, var(--claret-deep), #4d1019);
+    border: 1px solid rgba(255, 200, 87, 0.4);
+    border-radius: 14px;
     padding: 1rem;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
 }
 
 .prize-list h2 {
-    font-size: 1.1rem;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--bulb);
     margin-bottom: 0.75rem;
-    color: #ffd700;
 }
 
+/* Column-major: lowest 13 down the left, highest 13 down the right */
 .prizes-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(13, auto);
+    grid-auto-flow: column;
+    gap: 6px;
 }
 
 .prize-item {
-    background: #2c3e50;
-    border: 2px solid #3498db;
-    border-radius: 6px;
-    padding: 0.5rem;
     display: flex;
     justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.prize-item.unopened {
-    background: #27ae60;
-    border-color: #2ecc71;
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
-}
-
-.prize-item.opened {
-    background: #34495e;
-    border-color: #95a5a6;
-    color: #95a5a6;
+    padding: 0.32rem 0.4rem;
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 200, 87, 0.25);
+    transition: opacity 0.3s ease, background 0.3s ease;
 }
 
 .prize-value {
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--bulb);
 }
 
-.prize-status {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.35rem;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    text-align: center;
+/* The three top prizes shine while they're still in play */
+.prize-item.unopened:nth-last-child(-n+3) {
+    background: linear-gradient(var(--bulb), #f2a93b);
+    border-color: var(--bulb);
 }
 
-@media (max-width: 1200px) {
-    .game-content {
-        flex-direction: column;
-    }
-
-    .prize-list {
-        width: 100%;
-        margin-top: 1.5rem;
-    }
-
-    .prizes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
+.prize-item.unopened:nth-last-child(-n+3) .prize-value {
+    color: var(--ink);
 }
 
-@media (max-width: 768px) {
-    .game-info {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .cases-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 1rem;
-        padding: 0 0.75rem;
-    }
-
-    .case {
-        font-size: 1rem;
-        padding: 0.75rem;
-        min-width: 60px;
-        min-height: 60px;
-    }
-
-    .case .case-number {
-        font-size: 0.9rem;
-    }
+/* Knocked out */
+.prize-item.opened {
+    opacity: 0.35;
+    background: rgba(0, 0, 0, 0.5);
+    border-color: transparent;
 }
 
-/* Popup styles */
+.prize-item.opened .prize-value {
+    color: rgba(251, 243, 226, 0.6);
+    text-decoration: line-through;
+}
+
+/* Popups ------------------------------------------------------------------------------- */
+
 .popup {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    inset: 0;
+    background-color: rgba(21, 10, 38, 0.8);
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 .popup.active {
@@ -330,31 +426,60 @@ h1 {
 }
 
 .popup-content {
-    background-color: #1a1a1a;
-    padding: 2rem;
-    border-radius: 10px;
+    border-radius: 18px;
     text-align: center;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    max-width: 420px;
+    width: 100%;
 }
 
-.popup-content h2 {
-    color: #ffd700;
+/* The banker's call */
+.banker-card {
+    background: linear-gradient(170deg, var(--claret), var(--claret-deep));
+    border: 3px solid var(--bulb);
+    padding: 2rem 1.75rem;
+    box-shadow: 0 0 60px rgba(255, 200, 87, 0.25), 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .popup.active .banker-card {
+        animation: banker-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes banker-pop {
+        0% { transform: scale(0.7); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+}
+
+.banker-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(251, 243, 226, 0.7);
+    margin-bottom: 0.5rem;
+}
+
+.banker-card h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.7rem;
+    color: var(--canvas);
     margin-bottom: 1rem;
-    font-size: 2rem;
 }
 
-.popup-content p {
-    color: #fff;
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
+.banker-offer-line {
+    font-size: 0.95rem;
+    color: rgba(251, 243, 226, 0.8);
 }
 
 .popup-offer {
-    color: #ffd700;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-family: var(--font-display);
+    font-size: 3rem;
+    line-height: 1.2;
+    color: var(--bulb);
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.25rem;
 }
 
 .popup-buttons {
@@ -364,233 +489,143 @@ h1 {
 }
 
 .popup-buttons .btn {
-    min-width: 120px;
-    opacity: 1 !important;
-    filter: none !important;
-    pointer-events: auto !important;
-    cursor: pointer !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    transition: transform 0.1s;
+    min-width: 130px;
 }
 
-.popup-buttons .btn:active {
-    transform: scale(0.97);
+/* Settings */
+.settings-card {
+    background: var(--canvas);
+    color: var(--ink);
+    padding: 1.75rem 1.5rem;
+    max-width: 460px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    text-align: left;
 }
 
-@media (max-width: 1200px) {
+.settings-card h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+}
+
+.prize-list-input {
+    margin-bottom: 1.1rem;
+}
+
+.prize-list-input label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--bulb-deep);
+    margin-bottom: 0.5rem;
+}
+
+.prize-input-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.prize-input-group.regular-prizes {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.prize-input {
+    width: 100%;
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 1px solid rgba(58, 36, 21, 0.3);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ink);
+}
+
+.settings-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 2px dashed rgba(58, 36, 21, 0.2);
+}
+
+.settings-buttons .btn {
+    font-size: 0.8rem;
+    padding: 0.55rem 1rem;
+}
+
+/* Focus --------------------------------------------------------------------------------- */
+
+:is(a, button, input):focus-visible {
+    outline: 3px solid var(--bulb);
+    outline-offset: 2px;
+}
+
+/* Responsive ------------------------------------------------------------------------------ */
+
+@media (max-width: 1100px) {
     .game-content {
         flex-direction: column;
     }
 
     .prize-list {
         width: 100%;
-        margin-top: 1.5rem;
     }
 
     .prizes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-rows: repeat(7, auto);
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
+    .cases-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .studio {
+        padding: 0.6rem 0.9rem 1rem;
+    }
+
+    .studio-title {
+        font-size: 1rem;
+    }
+
+    .back-link {
+        font-size: 0.8rem;
+    }
+
     .game-info {
-        flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
+    }
+
+    .offer-amount,
+    .case-label,
+    .counter {
+        font-size: 1.15rem;
+    }
+
+    .podium h2 {
+        font-size: 0.6rem;
     }
 
     .cases-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 1rem;
-        padding: 0 0.75rem;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        row-gap: 18px;
     }
 
-    .case {
-        font-size: 1rem;
-        padding: 0.75rem;
-        min-width: 60px;
-        min-height: 60px;
-    }
-
-    .case .case-number {
-        font-size: 0.9rem;
+    .prizes-grid {
+        grid-template-rows: repeat(13, auto);
     }
 }
-
-.btn.settings {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #4a4a4a;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.btn.settings:hover {
-    background-color: #666;
-}
-
-.settings-form {
-    padding: 20px;
-}
-
-.prize-inputs {
-    margin-bottom: 20px;
-}
-
-.prize-list-input {
-    margin-bottom: 15px;
-}
-
-.prize-list-input label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.prize-input-group {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.prize-input {
-    width: 80px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.regular-prizes {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-}
-
-.settings-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
-
-/* --- Settings Popup Fixes --- */
-#settings-popup .popup-content {
-    max-width: 420px;
-    width: 100%;
-    margin: 0 auto;
-    background: #222;
-    border-radius: 16px;
-    padding: 32px 24px 24px 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    color: #fff;
-    position: relative;
-    overflow-y: auto;
-    max-height: 90vh;
-}
-#settings-popup h2 {
-    color: #ffd600;
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 18px;
-    font-weight: 700;
-}
-#settings-popup h3 {
-    color: #fff;
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-#settings-popup label {
-    color: #fff;
-    font-size: 1rem;
-    margin-bottom: 6px;
-}
-.prize-input-group.regular-prizes {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 10px;
-}
-.prize-input-group {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-}
-.prize-input {
-    width: 100%;
-    min-width: 0;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-    background: #333;
-    color: #fff;
-}
-.settings-buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    margin-top: 20px;
-}
-#save-settings {
-    background: #27d940;
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 8px 18px;
-    border-radius: 18px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(39,217,64,0.15);
-    transition: background 0.2s, box-shadow 0.2s;
-}
-#save-settings:hover {
-    background: #1fa331;
-    box-shadow: 0 4px 16px rgba(39,217,64,0.25);
-}
-#cancel-settings {
-    background: #ff3b3b;
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 8px 18px;
-    border-radius: 18px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(255,59,59,0.15);
-    transition: background 0.2s, box-shadow 0.2s;
-}
-#cancel-settings:hover {
-    background: #c82323;
-    box-shadow: 0 4px 16px rgba(255,59,59,0.25);
-}
-#restore-defaults {
-    background: #3498db;
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 8px 18px;
-    border-radius: 18px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(52,152,219,0.15);
-    transition: background 0.2s, box-shadow 0.2s;
-}
-#restore-defaults:hover {
-    background: #217dbb;
-    box-shadow: 0 4px 16px rgba(52,152,219,0.25);
-}
-/* --- End Settings Popup Fixes --- */
-
-#save-settings, #cancel-settings {
-    font-size: 0.95rem;
-    padding: 8px 18px;
-    border-radius: 18px;
-} 

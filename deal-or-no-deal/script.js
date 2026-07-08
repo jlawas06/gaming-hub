@@ -132,17 +132,26 @@ class DealOrNoDeal {
         casesGrid.innerHTML = '';
 
         this.cases.forEach(case_ => {
-            const caseElement = document.createElement('div');
+            const caseElement = document.createElement('button');
+            caseElement.type = 'button';
             caseElement.className = `case ${case_.opened ? 'opened' : ''} ${case_.number === this.playerCase ? 'selected' : ''}`;
             caseElement.textContent = case_.opened ? `₱${case_.value}` : case_.number;
             caseElement.dataset.caseNumber = case_.number;
 
             if (!case_.opened) {
                 if (!this.gameStarted) {
+                    caseElement.setAttribute('aria-label', `Pick case ${case_.number} as your case`);
                     caseElement.addEventListener('click', () => this.selectPlayerCase(case_.number));
                 } else if (case_.number !== this.playerCase) {
+                    caseElement.setAttribute('aria-label', `Open case ${case_.number}`);
                     caseElement.addEventListener('click', () => this.openCase(case_.number));
+                } else {
+                    caseElement.disabled = true;
+                    caseElement.setAttribute('aria-label', `Case ${case_.number}, your case`);
                 }
+            } else {
+                caseElement.disabled = true;
+                caseElement.setAttribute('aria-label', `Case ${case_.number}, opened, contained ₱${case_.value}`);
             }
 
             casesGrid.appendChild(caseElement);
@@ -200,6 +209,12 @@ class DealOrNoDeal {
         this.renderCases();
         this.renderPrizes();
 
+        // Replay the flip on just this case
+        const revealedCase = document.querySelector(`.case[data-case-number="${caseNumber}"]`);
+        if (revealedCase) {
+            revealedCase.classList.add('revealed');
+        }
+
         // Check if we're down to 2 cases
         const unopenedCases = this.cases.filter(c => !c.opened);
         if (unopenedCases.length === 2) {
@@ -207,7 +222,8 @@ class DealOrNoDeal {
         } else if (this.casesToOpen === 0) {
             this.canMakeDeal = true;
             const offer = this.updateBankerOffer();
-            this.showDealPopup(offer);
+            // Give the reveal a beat before the banker calls
+            setTimeout(() => this.showDealPopup(offer), 900);
         }
     }
 
@@ -266,8 +282,8 @@ class DealOrNoDeal {
             // Reset button states
             dealBtn.disabled = false;
             noDealBtn.disabled = false;
-            dealBtn.textContent = "KEEP CASE";
-            noDealBtn.textContent = "SWITCH CASE";
+            dealBtn.textContent = "Keep case";
+            noDealBtn.textContent = "Switch case";
             
             // Remove any existing classes and add active class
             dealBtn.className = 'btn deal active';
