@@ -1,4 +1,35 @@
-/* Reset and Base Styles */
+/* ==========================================================================
+   JL Gaming Hub — midway at night
+   Palette and type carried over from the color-game booth so the whole
+   hub reads as one fairground.
+   ========================================================================== */
+
+:root {
+    --night: #201038;
+    --night-deep: #150a26;
+    --night-glow: #35204f;
+    --canvas: #fbf3e2;
+    --canvas-shade: #f1e5cc;
+    --ink: #3a2415;
+    --ink-soft: #6f5136;
+    --bulb: #ffc857;
+    --bulb-deep: #b97b1a;
+    --felt: #1d6f4c;
+    --felt-deep: #124a33;
+    --claret: #a32638;
+    --claret-deep: #741a28;
+    --amber: #f2960f;
+    --amber-deep: #b56d00;
+    --dice-red: #e74c3c;
+    --dice-green: #2ecc71;
+    --dice-blue: #3498db;
+    --dice-yellow: #f1c40f;
+    --dice-pink: #ff69b4;
+
+    --font-display: 'Alfa Slab One', 'Arial Black', sans-serif;
+    --font-body: 'Nunito', 'Trebuchet MS', sans-serif;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,540 +37,301 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-body);
     line-height: 1.6;
-    color: #333;
-    overflow-x: hidden;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Navigation */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    padding: 1rem 0;
-    transition: all 0.3s ease;
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.nav-logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-.nav-link {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: color 0.3s ease;
-    position: relative;
-}
-
-.nav-link:hover {
-    color: #667eea;
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    transition: width 0.3s ease;
-}
-
-.nav-link:hover::after {
-    width: 100%;
-}
-
-/* Hero Section */
-.hero {
+    color: var(--canvas);
+    background:
+        radial-gradient(ellipse 120% 60% at 50% -10%, var(--night-glow), transparent 70%),
+        radial-gradient(1px 1px at 18% 22%, rgba(251, 243, 226, 0.35) 50%, transparent 51%),
+        radial-gradient(1px 1px at 71% 12%, rgba(251, 243, 226, 0.3) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 42% 8%, rgba(251, 243, 226, 0.25) 50%, transparent 51%),
+        radial-gradient(1px 1px at 88% 31%, rgba(251, 243, 226, 0.3) 50%, transparent 51%),
+        linear-gradient(var(--night), var(--night-deep));
+    background-color: var(--night-deep);
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
 }
 
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-    animation: float 20s ease-in-out infinite;
-}
-
-.hero-container {
-    max-width: 1200px;
+.midway {
+    max-width: 1240px;
     margin: 0 auto;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-    position: relative;
-    z-index: 2;
+    padding: 4rem 1.25rem 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.hero-content {
-    color: white;
-}
+/* Marquee header ---------------------------------------------------------- */
 
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    animation: slideInLeft 0.8s ease-out;
-}
-
-.hero-subtitle {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    opacity: 0.9;
-    animation: slideInLeft 0.8s ease-out 0.2s both;
-}
-
-.hero-description {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    opacity: 0.8;
-    animation: slideInLeft 0.8s ease-out 0.4s both;
-}
-
-.cta-button {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    text-decoration: none;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-    animation: slideInLeft 0.8s ease-out 0.6s both;
-}
-
-.cta-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.hero-visual {
-    position: relative;
-    height: 400px;
-}
-
-.floating-shapes {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.shape {
-    position: absolute;
-    font-size: 4rem;
-    animation: float 6s ease-in-out infinite;
-}
-
-.shape-1 {
-    top: 10%;
-    left: 20%;
-    animation-delay: 0s;
-}
-
-.shape-2 {
-    top: 60%;
-    left: 60%;
-    animation-delay: 1s;
-}
-
-.shape-3 {
-    top: 30%;
-    right: 10%;
-    animation-delay: 2s;
-}
-
-.shape-4 {
-    bottom: 20%;
-    left: 10%;
-    animation-delay: 3s;
-}
-
-/* Games Section */
-.games-section {
-    padding: 6rem 0;
-    background: #f8fafc;
-}
-
-.section-title {
+.marquee {
     text-align: center;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    margin-bottom: 3.5rem;
 }
 
-.section-subtitle {
-    text-align: center;
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 4rem;
+.marquee-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--bulb);
+    margin-bottom: 0.75rem;
 }
 
-.games-grid {
+.marquee-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 8.5vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--canvas);
+    text-shadow:
+        0 3px 0 var(--bulb-deep),
+        0 6px 24px rgba(255, 200, 87, 0.25);
+}
+
+/* A string of marquee bulbs under the wordmark */
+.bulb-string {
+    width: min(320px, 70%);
+    height: 8px;
+    margin: 1.1rem auto 0.9rem;
+    background-image: radial-gradient(circle 3px at 50% 50%, var(--bulb) 97%, transparent 100%);
+    background-size: 24px 8px;
+    background-repeat: repeat-x;
+    background-position: center;
+    filter: drop-shadow(0 0 6px rgba(255, 200, 87, 0.7));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .bulb-string {
+        animation: bulb-chase 1.6s steps(2) infinite;
+    }
+
+    @keyframes bulb-chase {
+        to { background-position-x: 24px; }
+    }
+}
+
+.marquee-subtitle {
+    font-size: 1.05rem;
+    color: rgba(251, 243, 226, 0.75);
+}
+
+/* Booths ------------------------------------------------------------------ */
+
+.booths {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 3rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
 }
 
-.game-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
+.booth {
+    background: var(--canvas);
+    color: var(--ink);
+    border-radius: 14px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.game-card::before {
+.booth:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 22px 44px rgba(0, 0, 0, 0.45),
+        0 0 0 2px var(--bulb),
+        0 0 30px rgba(255, 200, 87, 0.25);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .booth {
+        animation: booth-arrive 0.6s ease-out both;
+    }
+
+    .booth:nth-child(2) { animation-delay: 0.12s; }
+    .booth:nth-child(3) { animation-delay: 0.24s; }
+    .booth:nth-child(4) { animation-delay: 0.36s; }
+
+    @keyframes booth-arrive {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+    }
+}
+
+/* Scalloped awning: striped canopy + hanging half-circles, colored per game */
+
+.awning {
+    height: 26px;
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--awning-a) 0 28px,
+        var(--canvas) 28px 56px
+    );
+    position: relative;
+}
+
+.awning::after {
     content: '';
     position: absolute;
-    top: 0;
+    top: 100%;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 13px;
+    background-image:
+        radial-gradient(circle 14px at 14px 0, var(--awning-a) 97%, transparent 100%),
+        radial-gradient(circle 14px at 42px 0, var(--canvas-shade) 97%, transparent 100%);
+    background-size: 56px 13px;
+    background-repeat: repeat-x;
 }
 
-.game-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+.booth-bingo { --awning-a: var(--felt); }
+.booth-cards { --awning-a: var(--amber); }
+.booth-deal  { --awning-a: var(--claret); }
+
+/* The dice booth flies every color it plays with */
+.booth-dice .awning {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--dice-red) 0 28px,
+        var(--canvas) 28px 56px,
+        var(--dice-blue) 56px 84px,
+        var(--canvas) 84px 112px,
+        var(--dice-yellow) 112px 140px,
+        var(--canvas) 140px 168px,
+        var(--dice-green) 168px 196px,
+        var(--canvas) 196px 224px,
+        var(--dice-pink) 224px 252px,
+        var(--canvas) 252px 280px
+    );
 }
 
-.game-icon {
-    font-size: 4rem;
-    text-align: center;
-    margin-bottom: 1.5rem;
+.booth-dice .awning::after {
+    background-image:
+        radial-gradient(circle 14px at 14px 0, var(--dice-red) 97%, transparent 100%),
+        radial-gradient(circle 14px at 70px 0, var(--dice-blue) 97%, transparent 100%),
+        radial-gradient(circle 14px at 126px 0, var(--dice-yellow) 97%, transparent 100%),
+        radial-gradient(circle 14px at 182px 0, var(--dice-green) 97%, transparent 100%),
+        radial-gradient(circle 14px at 238px 0, var(--dice-pink) 97%, transparent 100%),
+        radial-gradient(circle 14px at 42px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 98px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 154px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 210px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 266px 0, var(--canvas-shade) 97%, transparent 100%);
+    background-size: 280px 13px;
 }
 
-.game-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: #333;
-}
+/* Booth interior ----------------------------------------------------------- */
 
-.game-description {
-    color: #666;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-}
-
-.game-features {
+.booth-body {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-}
-
-.feature-tag {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.game-stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: #f8fafc;
-    border-radius: 10px;
-}
-
-.stat {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #667eea;
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.game-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.btn {
+    flex-direction: column;
     flex: 1;
-    padding: 0.8rem 1.5rem;
-    border: none;
+    padding: 2.2rem 1.75rem 1.75rem;
+    text-align: center;
+}
+
+.booth-token {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 1.1rem;
+    display: grid;
+    place-items: center;
+    font-size: 2.1rem;
+    background: radial-gradient(circle at 35% 30%, var(--bulb), var(--bulb-deep));
+    border-radius: 50%;
+    box-shadow:
+        inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+        0 4px 10px rgba(58, 36, 21, 0.3);
+}
+
+.booth-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.55rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+}
+
+.booth-description {
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    margin-bottom: 1.25rem;
+}
+
+.booth-facts {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-top: 2px dashed rgba(58, 36, 21, 0.2);
+    padding-top: 1rem;
+    margin-top: auto;
+    margin-bottom: 1.25rem;
+}
+
+.booth-play {
+    display: block;
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-align: center;
+    color: var(--canvas);
+    background: linear-gradient(var(--play-a), var(--play-b));
     border-radius: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    text-align: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    box-shadow: 0 4px 0 var(--play-b);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
+.booth-bingo .booth-play { --play-a: var(--felt);   --play-b: var(--felt-deep); }
+.booth-cards .booth-play { --play-a: var(--amber);  --play-b: var(--amber-deep); }
+.booth-dice  .booth-play { --play-a: var(--dice-blue); --play-b: #21618c; }
+.booth-deal  .booth-play { --play-a: var(--claret); --play-b: var(--claret-deep); }
 
-.btn-primary:hover {
+.booth-play:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 0 var(--play-b), 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
-.btn-secondary {
-    background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
+.booth-play:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--play-b);
 }
 
-.btn-secondary:hover {
-    background: #667eea;
-    color: white;
-    transform: translateY(-2px);
+:is(.booth-play, a):focus-visible {
+    outline: 3px solid var(--bulb);
+    outline-offset: 3px;
 }
 
-/* About Section */
-.about-section {
-    padding: 6rem 0;
-    background: white;
-}
+/* Footer ------------------------------------------------------------------- */
 
-.about-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-.about-description {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 1.5rem;
-    line-height: 1.8;
-}
-
-.about-features {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-}
-
-.feature-item {
+.midway-footer {
     text-align: center;
-    padding: 2rem;
-    border-radius: 15px;
-    background: #f8fafc;
-    transition: transform 0.3s ease;
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    font-size: 0.85rem;
+    color: rgba(251, 243, 226, 0.5);
 }
 
-.feature-item:hover {
-    transform: translateY(-5px);
-}
+/* Responsive ---------------------------------------------------------------- */
 
-.feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.feature-item h4 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #333;
-}
-
-.feature-item p {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-/* Footer */
-.footer {
-    background: #1a202c;
-    color: white;
-    padding: 3rem 0 1rem;
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.footer-section h3,
-.footer-section h4 {
-    margin-bottom: 1rem;
-}
-
-.footer-section ul {
-    list-style: none;
-}
-
-.footer-section ul li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-section a {
-    color: #cbd5e0;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer-section a:hover {
-    color: white;
-}
-
-.footer-bottom {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid #2d3748;
-    color: #cbd5e0;
-}
-
-/* Animations */
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
+@media (max-width: 640px) {
+    .midway {
+        padding-top: 2.5rem;
     }
-    to {
-        opacity: 1;
-        transform: translateX(0);
+
+    .marquee {
+        margin-bottom: 2.5rem;
+    }
+
+    .booths {
+        gap: 1.5rem;
+    }
+
+    .booth-body {
+        padding: 1.9rem 1.4rem 1.4rem;
     }
 }
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
-
-    .hero-container {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 2rem;
-    }
-
-    .hero-title {
-        font-size: 2.5rem;
-    }
-
-    .section-title {
-        font-size: 2rem;
-    }
-
-    .games-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .about-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .about-features {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
-    .game-actions {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 0 15px;
-    }
-
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-    }
-
-    .game-card {
-        padding: 1.5rem;
-    }
-
-    .games-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-} 

@@ -5,226 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JL Gaming Hub - Classic Games Collection</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="nav-logo">🎮 JL Gaming Hub</h1>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#games" class="nav-link">Games</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-            </ul>
-        </div>
-    </nav>
+    <main class="midway">
+        <header class="marquee">
+            <p class="marquee-eyebrow">Open nightly &middot; four booths</p>
+            <h1 class="marquee-title">JL Gaming Hub</h1>
+            <div class="bulb-string" aria-hidden="true"></div>
+            <p class="marquee-subtitle">Pick a booth and play &mdash; right in your browser.</p>
+        </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Welcome to JL Gaming Hub</h1>
-                <p class="hero-subtitle">Experience the thrill of classic games with a modern twist</p>
-                <p class="hero-description">Choose from our collection of entertaining games designed for fun and excitement</p>
-                <a href="#games" class="cta-button">Explore Games</a>
-            </div>
-            <div class="hero-visual">
-                <div class="floating-shapes">
-                    <div class="shape shape-1">🎯</div>
-                    <div class="shape shape-2">🎲</div>
-                    <div class="shape shape-3">🎮</div>
-                    <div class="shape shape-4">🏆</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Games Section -->
-    <section id="games" class="games-section">
-        <div class="container">
-            <h2 class="section-title">Our Games</h2>
-            <p class="section-subtitle">Discover our collection of engaging games</p>
-            
-            <div class="games-grid">
-                <!-- Bingo Game Card -->
-                <div class="game-card">
-                    <div class="game-icon">🎯</div>
-                    <h3 class="game-title">BINGO Caller</h3>
-                    <p class="game-description">
-                        A modern, interactive BINGO caller with speech synthesis and visual number tracking. 
-                        Perfect for hosting BINGO games with automatic number calling and real-time tracking.
+        <section class="booths" aria-label="Games">
+            <!-- BINGO Caller -->
+            <article class="booth booth-bingo">
+                <div class="awning" aria-hidden="true"></div>
+                <div class="booth-body">
+                    <div class="booth-token" aria-hidden="true">🎱</div>
+                    <h2 class="booth-title">BINGO Caller</h2>
+                    <p class="booth-description">
+                        Host a bingo night with automatic number calling, a spoken caller,
+                        and a live board that tracks every ball drawn.
                     </p>
-                    <div class="game-features">
-                        <span class="feature-tag">🎲 Auto Calling</span>
-                        <span class="feature-tag">🔊 Speech Synthesis</span>
-                        <span class="feature-tag">📊 Visual Tracking</span>
-                        <span class="feature-tag">⌨️ Keyboard Controls</span>
-                    </div>
-                    <div class="game-stats">
-                        <div class="stat">
-                            <span class="stat-number">75</span>
-                            <span class="stat-label">Numbers</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">5</span>
-                            <span class="stat-label">Columns</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">∞</span>
-                            <span class="stat-label">Games</span>
-                        </div>
-                    </div>
-                    <div class="game-actions">
-                        <a href="bingo-caller/" class="btn btn-primary">Play Now</a>
-                        <a href="bingo-caller/README.md" class="btn btn-secondary">Learn More</a>
-                    </div>
+                    <p class="booth-facts">75 balls &middot; voice caller &middot; keyboard controls</p>
+                    <a href="bingo-caller/" class="booth-play">Play now</a>
                 </div>
+            </article>
 
-                <!-- Color Dice Game Card -->
-                <div class="game-card">
-                    <div class="game-icon">🎲</div>
-                    <h3 class="game-title">Color Dice Game</h3>
-                    <p class="game-description">
-                        A thrilling dice betting game where you predict colors on three dice. 
-                        Test your luck and strategy with multiple betting options and exciting payouts.
+            <!-- Bingo Card Generator -->
+            <article class="booth booth-cards">
+                <div class="awning" aria-hidden="true"></div>
+                <div class="booth-body">
+                    <div class="booth-token" aria-hidden="true">🖨️</div>
+                    <h2 class="booth-title">Bingo Cards</h2>
+                    <p class="booth-description">
+                        Generate fresh 75-ball bingo cards for the whole table,
+                        then print them or dab numbers right on screen.
                     </p>
-                    <div class="game-features">
-                        <span class="feature-tag">🎨 6 Colors</span>
-                        <span class="feature-tag">💰 Multiple Bets</span>
-                        <span class="feature-tag">📈 Live Stats</span>
-                        <span class="feature-tag">🎯 Strategy Game</span>
-                    </div>
-                    <div class="game-stats">
-                        <div class="stat">
-                            <span class="stat-number">3</span>
-                            <span class="stat-label">Dice</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">6</span>
-                            <span class="stat-label">Colors</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">10x</span>
-                            <span class="stat-label">Max Payout</span>
-                        </div>
-                    </div>
-                    <div class="game-actions">
-                        <a href="color-game/" class="btn btn-primary">Play Now</a>
-                        <a href="color-game/README.md" class="btn btn-secondary">Learn More</a>
-                    </div>
+                    <p class="booth-facts">75-ball cards &middot; tap to dab &middot; print-ready</p>
+                    <a href="bingo-card-generator/" class="booth-play">Play now</a>
                 </div>
+            </article>
 
-                <!-- Deal or No Deal Game Card -->
-                <div class="game-card">
-                    <div class="game-icon">💼</div>
-                    <h3 class="game-title">Deal or No Deal</h3>
-                    <p class="game-description">
-                        Test your luck and decision-making skills in this classic game show adaptation. 
-                        Choose cases, face the banker's offers, and try to win the highest possible prize!
+            <!-- Color Dice Game -->
+            <article class="booth booth-dice">
+                <div class="awning" aria-hidden="true"></div>
+                <div class="booth-body">
+                    <div class="booth-token" aria-hidden="true">🎲</div>
+                    <h2 class="booth-title">Color Dice</h2>
+                    <p class="booth-description">
+                        Place your chips on a color, roll three dice, and watch the payout
+                        climb when the colors match your bet.
                     </p>
-                    <div class="game-features">
-                        <span class="feature-tag">💼 26 Cases</span>
-                        <span class="feature-tag">💰 Dynamic Offers</span>
-                        <span class="feature-tag">🎯 Strategy</span>
-                        <span class="feature-tag">🎮 Interactive</span>
-                    </div>
-                    <div class="game-stats">
-                        <div class="stat">
-                            <span class="stat-number">26</span>
-                            <span class="stat-label">Cases</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">$1</span>
-                            <span class="stat-label">Min Prize</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">$200</span>
-                            <span class="stat-label">Max Prize</span>
-                        </div>
-                    </div>
-                    <div class="game-actions">
-                        <a href="deal-or-no-deal/" class="btn btn-primary">Play Now</a>
-                        <a href="deal-or-no-deal/README.md" class="btn btn-secondary">Learn More</a>
-                    </div>
+                    <p class="booth-facts">3 dice &middot; 6 colors &middot; up to 10&times; payout</p>
+                    <a href="color-game/" class="booth-play">Play now</a>
                 </div>
-            </div>
-        </div>
-    </section>
+            </article>
 
-    <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2 class="section-title">About JL Gaming Hub</h2>
-                    <p class="about-description">
-                        JL Gaming Hub brings you a curated collection of classic games reimagined for the modern web. 
-                        Each game is crafted with attention to detail, featuring beautiful interfaces, smooth animations, 
-                        and engaging gameplay that works perfectly on any device.
+            <!-- Deal or No Deal -->
+            <article class="booth booth-deal">
+                <div class="awning" aria-hidden="true"></div>
+                <div class="booth-body">
+                    <div class="booth-token" aria-hidden="true">💼</div>
+                    <h2 class="booth-title">Deal or No Deal</h2>
+                    <p class="booth-description">
+                        Pick a case, open the rest, and stare down the banker&rsquo;s offers
+                        on the way to the top prize.
                     </p>
-                    <p class="about-description">
-                        Our games are built using pure web technologies - no downloads, no installations required. 
-                        Just open your browser and start playing!
-                    </p>
+                    <p class="booth-facts">26 cases &middot; banker offers &middot; $200 top prize</p>
+                    <a href="deal-or-no-deal/" class="booth-play">Play now</a>
                 </div>
-                <div class="about-features">
-                    <div class="feature-item">
-                        <div class="feature-icon">🌐</div>
-                        <h4>Web-Based</h4>
-                        <p>Play directly in your browser with no downloads required</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📱</div>
-                        <h4>Responsive</h4>
-                        <p>Works perfectly on desktop, tablet, and mobile devices</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🎨</div>
-                        <h4>Modern Design</h4>
-                        <p>Beautiful interfaces with smooth animations and effects</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">⚡</div>
-                        <h4>Fast & Smooth</h4>
-                        <p>Optimized performance for the best gaming experience</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+            </article>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>🎮 JL Gaming Hub</h3>
-                    <p>Bringing classic games to the modern web</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Games</h4>
-                    <ul>
-                        <li><a href="bingo-caller/">BINGO Caller</a></li>
-                        <li><a href="color-game/">Color Dice Game</a></li>
-                        <li><a href="deal-or-no-deal/">Deal or No Deal</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="bingo-caller/README.md">BINGO Documentation</a></li>
-                        <li><a href="color-game/README.md">Color Game Guide</a></li>
-                        <li><a href="deal-or-no-deal/README.md">Deal or No Deal Guide</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 JL Gaming Hub. Built with ❤️ for game lovers.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+        <footer class="midway-footer">
+            <p>&copy; JL Gaming Hub &middot; built for game night</p>
+        </footer>
+    </main>
 </body>
-</html> 
+</html>
