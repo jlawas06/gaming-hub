@@ -7,16 +7,28 @@
 
 body {
     background-color: #f0f0f0;
-    padding: 20px;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
     background-color: white;
     padding: 20px;
-    border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.game-layout {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 260px 1fr 260px;
+    grid-template-areas: "stats game history";
+    gap: 20px;
+    align-items: stretch;
 }
 
 h1 {
@@ -26,33 +38,134 @@ h1 {
 }
 
 .game-section {
+    grid-area: game;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 30px;
+    justify-content: center;
 }
 
 .dice-container {
+    --die-size: 150px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 24px;
     margin-bottom: 30px;
+    padding-top: calc(var(--die-size) * 0.85);
+    transition: opacity 0.18s ease;
 }
 
-.dice {
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
-    border: 2px solid #333;
-    background-color: #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.5s ease;
+.dice-container.fade-out {
+    opacity: 0;
+}
+
+.die-scene {
+    position: relative;
+    width: var(--die-size);
+    height: var(--die-size);
+    perspective: calc(var(--die-size) * 8);
+}
+
+/* Soft ground shadow; shrinks/fades while the die is airborne (animated from JS) */
+.die-shadow {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    bottom: calc(var(--die-size) * -0.14);
+    height: calc(var(--die-size) * 0.18);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+    opacity: 0.4;
+}
+
+/* Note: no will-change here — it breaks transform-style: preserve-3d in Safari/WebKit */
+.die-bounce {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: 50% 100%;
+}
+
+.die-cube {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.die-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 14%;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.12));
+    box-shadow: inset 0 0 calc(var(--die-size) * 0.18) rgba(0, 0, 0, 0.22),
+                inset 0 calc(var(--die-size) * -0.05) calc(var(--die-size) * 0.1) rgba(0, 0, 0, 0.12);
+    backface-visibility: hidden;
+}
+
+.face-front  { transform: translateZ(calc(var(--die-size) / 2)); }
+.face-back   { transform: rotateY(180deg) translateZ(calc(var(--die-size) / 2)); }
+.face-right  { transform: rotateY(90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-left   { transform: rotateY(-90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-top    { transform: rotateX(90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-bottom { transform: rotateX(-90deg) translateZ(calc(var(--die-size) / 2)); }
+
+/* Die face colors */
+.die-face.red    { background-color: #e74c3c; }
+.die-face.green  { background-color: #2ecc71; }
+.die-face.blue   { background-color: #3498db; }
+.die-face.yellow { background-color: #f1c40f; }
+.die-face.white  { background-color: #ffffff; border-color: #ccc; }
+.die-face.pink   { background-color: #ff69b4; }
+
+/* Pulse on matching dice after settle */
+.die-scene.die-pulse {
+    animation: die-pulse 0.45s ease-in-out 2;
+}
+
+@keyframes die-pulse {
+    50% { transform: scale(1.1); }
+}
+
+@media (max-width: 1000px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "game"
+            "stats"
+            "history";
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .dice-container {
+        --die-size: 110px;
+    }
+
+    /* Stacked flow: cap the history list instead of stretching it */
+    #gameHistory {
+        max-height: 300px;
+    }
+
+    .game-section {
+        padding: 20px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .dice-container {
+        --die-size: 84px;
+        gap: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .die-scene.die-pulse {
+        animation: none;
+    }
 }
 
 .controls {
@@ -94,7 +207,6 @@ h1 {
 
 .result-section {
     text-align: center;
-    margin-bottom: 30px;
     min-height: 30px;
     font-size: 18px;
 }
@@ -105,7 +217,7 @@ h1 {
 
 /* Stats Section */
 .stats-section {
-    margin-bottom: 30px;
+    grid-area: stats;
     padding: 15px;
     background-color: #f8f8f8;
     border-radius: 8px;
@@ -120,9 +232,8 @@ h1 {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
     margin-bottom: 20px;
 }
 
@@ -179,8 +290,14 @@ h1 {
 }
 
 .history-section {
-    border-top: 1px solid #ddd;
-    padding-top: 20px;
+    grid-area: history;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .history-section h3 {
@@ -190,11 +307,14 @@ h1 {
 
 #gameHistory {
     list-style-type: none;
-    max-height: 250px;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     border: 1px solid #eee;
     border-radius: 5px;
     padding: 10px;
+    background-color: white;
+    font-size: 14px;
 }
 
 #gameHistory li {
@@ -211,19 +331,3 @@ h1 {
     font-size: 0.9em;
 }
 
-.dice-animation {
-    animation: roll 0.5s ease;
-}
-
-@keyframes roll {
-    0% { transform: rotateX(0deg) rotateY(0deg); }
-    100% { transform: rotateX(360deg) rotateY(360deg); }
-}
-
-/* Dice colors */
-.dice.red { background-color: #e74c3c; }
-.dice.green { background-color: #2ecc71; }
-.dice.blue { background-color: #3498db; }
-.dice.yellow { background-color: #f1c40f; }
-.dice.white { background-color: #ffffff; border: 2px solid #ddd; }
-.dice.pink { background-color: #ff69b4; } 

@@ -9,24 +9,8 @@
 <body>
     <div class="container">
         <h1>Color Dice Game</h1>
-        
-        <div class="game-section">
-            <div class="dice-container">
-                <div class="dice" id="dice1"></div>
-                <div class="dice" id="dice2"></div>
-                <div class="dice" id="dice3"></div>
-            </div>
-            
-            <div class="controls">
-                <button id="rollDiceBtn">Roll Dice</button>
-                <button id="resetStatsBtn">Reset Stats</button>
-            </div>
-        </div>
-        
-        <div class="result-section">
-            <p id="resultMessage"></p>
-        </div>
-        
+
+        <div class="game-layout">
         <div class="stats-section">
             <h3>Color Statistics</h3>
             <div class="stats-grid">
@@ -57,10 +41,64 @@
             </div>
             <p class="total-rolls">Total Rolls: <span id="totalRolls">0</span></p>
         </div>
-        
+
+        <div class="game-section">
+            <div class="dice-container" id="diceContainer">
+                <div class="die-scene">
+                    <div class="die-shadow"></div>
+                    <div class="die-bounce">
+                        <div class="die-cube" id="dice1">
+                            <div class="die-face face-front red"></div>
+                            <div class="die-face face-back blue"></div>
+                            <div class="die-face face-right green"></div>
+                            <div class="die-face face-left yellow"></div>
+                            <div class="die-face face-top white"></div>
+                            <div class="die-face face-bottom pink"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="die-scene">
+                    <div class="die-shadow"></div>
+                    <div class="die-bounce">
+                        <div class="die-cube" id="dice2">
+                            <div class="die-face face-front red"></div>
+                            <div class="die-face face-back blue"></div>
+                            <div class="die-face face-right green"></div>
+                            <div class="die-face face-left yellow"></div>
+                            <div class="die-face face-top white"></div>
+                            <div class="die-face face-bottom pink"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="die-scene">
+                    <div class="die-shadow"></div>
+                    <div class="die-bounce">
+                        <div class="die-cube" id="dice3">
+                            <div class="die-face face-front red"></div>
+                            <div class="die-face face-back blue"></div>
+                            <div class="die-face face-right green"></div>
+                            <div class="die-face face-left yellow"></div>
+                            <div class="die-face face-top white"></div>
+                            <div class="die-face face-bottom pink"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="rollDiceBtn">Roll Dice</button>
+                <button id="resetStatsBtn">Reset Stats</button>
+            </div>
+
+            <div class="result-section">
+                <p id="resultMessage"></p>
+            </div>
+        </div>
+
         <div class="history-section">
             <h3>Roll History</h3>
             <ul id="gameHistory"></ul>
+        </div>
         </div>
     </div>
 
