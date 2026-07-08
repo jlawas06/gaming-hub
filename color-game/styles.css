@@ -130,6 +130,18 @@ h1 {
     padding: 0 20px 26px;
 }
 
+.dice-stage.shake {
+    animation: stage-shake 0.35s ease-out;
+}
+
+@keyframes stage-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+}
+
 .dice-container {
     --die-size: 150px;
     display: flex;
@@ -169,6 +181,15 @@ h1 {
     height: 100%;
     transform-style: preserve-3d;
     transform-origin: 50% 100%;
+}
+
+@keyframes die-wind-up {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(4px) scale(0.92); }
+}
+
+.die-bounce.wind-up {
+    animation: die-wind-up 0.18s ease-in forwards;
 }
 
 .die-cube {
@@ -368,8 +389,25 @@ h1 {
     list-style-type: none;
     flex: 1;
     min-height: 0;
+    max-height: min(420px, calc(100vh - 280px));
     overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(58, 36, 21, 0.35) transparent;
     padding: 2px;
+}
+
+#gameHistory::-webkit-scrollbar {
+    width: 6px;
+}
+
+#gameHistory::-webkit-scrollbar-thumb {
+    background: rgba(58, 36, 21, 0.35);
+    border-radius: 3px;
+}
+
+#gameHistory::-webkit-scrollbar-thumb:hover {
+    background: rgba(58, 36, 21, 0.5);
 }
 
 #gameHistory:empty::after {
@@ -455,6 +493,11 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
     .die-scene.die-pulse {
+        animation: none;
+    }
+
+    .dice-stage.shake,
+    .die-bounce.wind-up {
         animation: none;
     }
 }

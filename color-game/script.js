@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const diceScenes = diceBounce.map(bounce => bounce.parentElement);
     const diceShadows = diceScenes.map(scene => scene.querySelector('.die-shadow'));
     const diceContainer = document.getElementById('diceContainer');
+    const diceStage = document.querySelector('.dice-stage');
     const rollDiceBtn = document.getElementById('rollDiceBtn');
     const resetStatsBtn = document.getElementById('resetStatsBtn');
     const resultMessage = document.getElementById('resultMessage');
@@ -56,10 +57,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let isRolling = false;
 
-    // Give each die a slightly different idle tilt so the cubes read as 3D
+    // Aligned idle pose — all dice face-forward, centered
     dice.forEach((cube, i) => {
-        diceState[i] = { z: 0, x: -18, y: -30 + i * 22, tx: 0 };
+        diceState[i] = { z: 0, x: 0, y: 0, tx: 0 };
         applyDieTransform(i);
+        diceBounce[i].style.transform = '';
+        diceShadows[i].style.transform = '';
     });
 
     // Load data from localStorage
@@ -142,8 +145,10 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 results.forEach((color, i) => {
                     const base = faceOrientations[color];
-                    diceState[i] = { z: 0, x: base.x, y: base.y, tx: diceState[i].tx };
+                    diceState[i] = { z: 0, x: base.x, y: base.y, tx: 0 };
                     applyDieTransform(i);
+                    diceBounce[i].style.transform = '';
+                    diceShadows[i].style.transform = '';
                 });
                 diceContainer.classList.remove('fade-out');
                 setTimeout(finish, 250);
@@ -151,8 +156,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        let maxEndTime = 0;
+        const windUpMs = 180;
+        let maxEndTime = windUpMs;
         const settlePromises = [];
+        let shakeScheduled = false;
+
+        function triggerStageShake() {
+            if (shakeScheduled || !diceStage) return;
+            shakeScheduled = true;
+            diceStage.classList.remove('shake');
+            void diceStage.offsetWidth;
+            diceStage.classList.add('shake');
+            diceStage.addEventListener('animationend', () => {
+                diceStage.classList.remove('shake');
+            }, { once: true });
+        }
+
+        // Brief wind-up before the throw
+        diceBounce.forEach(bounce => bounce.classList.add('wind-up'));
 
         results.forEach((color, i) => {
             const cube = dice[i];
@@ -162,35 +183,33 @@ document.addEventListener('DOMContentLoaded', function() {
             const base = faceOrientations[color];
             const state = diceState[i];
 
-            // Stagger the dice and vary each one's throw so they don't move in lockstep
-            const delay = i * 150 + Math.random() * 60;
-            const duration = 1350 + Math.random() * 450;
+            const delay = windUpMs + i * 280 + Math.random() * 100;
+            const duration = 2200 + Math.random() * 800;
 
-            // Land exactly on the target face: base orientation + whole extra turns
-            const spinX = 720 + Math.floor(Math.random() * 3) * 360;
-            const spinY = 720 + Math.floor(Math.random() * 3) * 360;
+            const spinX = 1440 + Math.floor(Math.random() * 3) * 360;
+            const spinY = 1440 + Math.floor(Math.random() * 3) * 360;
             const targetX = base.x + 360 * Math.ceil((state.x + spinX - base.x) / 360);
             const targetY = base.y + 360 * Math.ceil((state.y + spinY - base.y) / 360);
-            const restTilt = Math.random() * 8 - 4;
 
-            // Sideways scatter: each throw drifts a little, staying near center
-            const prevTx = state.tx || 0;
-            const newTx = Math.max(-14, Math.min(14, prevTx + (Math.random() * 24 - 12)));
-            const tx = p => prevTx + (newTx - prevTx) * Math.min(p / 0.88, 1);
+            // Mid-air sideways drift that snaps back to center on land
+            const scatterPeak = Math.random() * 22 - 11;
+            const txAt = p => {
+                if (p <= 0.34) return scatterPeak * (p / 0.34);
+                if (p <= 0.76) return scatterPeak * (1 - (p - 0.34) / 0.42 * 0.35);
+                return scatterPeak * 0.65 * (1 - (p - 0.76) / 0.24);
+            };
 
-            // Toss height and damped bounce heights
-            const h1 = size * (0.6 + Math.random() * 0.2);
+            const h1 = size * (0.85 + Math.random() * 0.25);
             const h2 = h1 * 0.4;
             const h3 = h1 * 0.16;
             const h4 = h1 * 0.06;
 
-            const rise = 'cubic-bezier(0.22, 0.61, 0.36, 1)';   // decelerate going up
-            const fall = 'cubic-bezier(0.55, 0.06, 0.68, 0.19)'; // accelerate coming down
+            const rise = 'cubic-bezier(0.22, 0.61, 0.36, 1)';
+            const fall = 'cubic-bezier(0.55, 0.06, 0.68, 0.19)';
 
             const pos = (p, y, sx, sy) =>
-                `translate(${tx(p).toFixed(2)}px, ${(-y).toFixed(2)}px) scale(${sx || 1}, ${sy || 1})`;
+                `translate(${txAt(p).toFixed(2)}px, ${(-y).toFixed(2)}px) scale(${sx || 1}, ${sy || 1})`;
 
-            // Toss up, drop, three damped bounces, squash on each impact
             const bounceAnim = bounce.animate([
                 { offset: 0,    transform: pos(0, 0), easing: rise },
                 { offset: 0.15, transform: pos(0.15, h1), easing: fall },
@@ -204,28 +223,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 { offset: 1,    transform: pos(1, 0) }
             ], { duration, delay, fill: 'both' });
 
-            // Tumble: constant spin while airborne, losing speed at each impact.
-            // `share` is how much of the total rotation is done by that moment.
             const rot = (share, z) =>
                 `rotateZ(${z.toFixed(2)}deg) ` +
                 `rotateX(${(state.x + (targetX - state.x) * share).toFixed(2)}deg) ` +
                 `rotateY(${(state.y + (targetY - state.y) * share).toFixed(2)}deg)`;
 
-            const z1 = state.z + (Math.random() * 120 - 60);
-            const z2 = restTilt + (Math.random() * 24 - 12);
-            const z3 = restTilt + (Math.random() * 8 - 4);
+            const z1 = state.z + (Math.random() * 140 - 70);
+            const z2 = Math.random() * 28 - 14;
+            const z3 = Math.random() * 10 - 5;
 
             const cubeAnim = cube.animate([
                 { offset: 0,    transform: rot(0, state.z), easing: 'linear' },
-                { offset: 0.34, transform: rot(0.62, z1), easing: 'linear' },
-                { offset: 0.58, transform: rot(0.85, z2), easing: 'linear' },
-                { offset: 0.76, transform: rot(0.95, z3), easing: 'ease-out' },
-                { offset: 0.88, transform: rot(1, restTilt) },
-                { offset: 1,    transform: rot(1, restTilt) }
+                { offset: 0.28, transform: rot(0.42, z1), easing: 'linear' },
+                { offset: 0.50, transform: rot(0.72, z1), easing: 'linear' },
+                { offset: 0.68, transform: rot(0.86, z2), easing: 'linear' },
+                { offset: 0.82, transform: rot(0.93, z3), easing: 'linear' },
+                { offset: 0.92, transform: rot(0.97, z3 * 0.35), easing: 'ease-out' },
+                { offset: 1,    transform: rot(1, 0), easing: 'ease-out' }
             ], { duration, delay, fill: 'both' });
 
-            // Ground shadow: shrinks and fades while the die is in the air
-            const sh = (p, s, o) => ({ transform: `translateX(${tx(p).toFixed(2)}px) scale(${s})`, opacity: o });
+            const sh = (p, s, o) => ({ transform: `translateX(${txAt(p).toFixed(2)}px) scale(${s})`, opacity: o });
             const shadowAnim = shadow.animate([
                 { offset: 0,    ...sh(0, 1, 0.4), easing: rise },
                 { offset: 0.15, ...sh(0.15, 0.55, 0.15), easing: fall },
@@ -237,25 +254,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 { offset: 1,    ...sh(1, 1, 0.4) }
             ], { duration, delay, fill: 'both' });
 
-            diceState[i] = { z: restTilt, x: targetX, y: targetY, tx: newTx };
+            diceState[i] = { z: 0, x: targetX, y: targetY, tx: 0 };
 
-            // On settle: bake final poses into inline styles, then release the animations
             commitFinals.push(() => {
                 applyDieTransform(i);
-                bounce.style.transform = `translateX(${newTx.toFixed(2)}px)`;
-                shadow.style.transform = `translateX(${newTx.toFixed(2)}px)`;
+                bounce.style.transform = '';
+                shadow.style.transform = '';
+                bounce.classList.remove('wind-up');
                 [bounceAnim, cubeAnim, shadowAnim].forEach(anim => {
                     try { anim.cancel(); } catch (e) { /* already canceled */ }
                 });
             });
 
+            if (i === 0) {
+                setTimeout(triggerStageShake, delay + duration * 0.34);
+            }
+
             maxEndTime = Math.max(maxEndTime, delay + duration);
             settlePromises.push(cubeAnim.finished);
         });
 
+        setTimeout(() => {
+            diceBounce.forEach(bounce => bounce.classList.remove('wind-up'));
+        }, windUpMs);
+
         Promise.all(settlePromises).then(finish).catch(() => {});
 
-        // Fallback in case animation finish never resolves (e.g. hidden tab)
         fallbackTimer = setTimeout(finish, maxEndTime + 400);
     }
 
@@ -349,8 +373,8 @@ document.addEventListener('DOMContentLoaded', function() {
             gameHistory.appendChild(li);
         }
         
-        // Limit history to 20 items
-        while (gameHistory.children.length > 20) {
+        // Limit history to 100 items (scroll handles overflow)
+        while (gameHistory.children.length > 100) {
             gameHistory.removeChild(gameHistory.lastChild);
         }
     }
