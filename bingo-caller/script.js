@@ -5,6 +5,7 @@ class BingoCaller {
         this.currentNumber = null;
         this.lastNumber = null;
         this.isPlaying = false;
+        this.isMuted = false;
         this.timeoutId = null;  // Add timeout ID tracking
         this.callSequence = 0;  // Track sequence of called numbers
 
@@ -39,6 +40,7 @@ class BingoCaller {
         this.elements = {
             currentNumber: document.getElementById('currentNumber'),
             currentLetter: document.getElementById('currentLetter'),
+            ballDisplay: document.getElementById('ballDisplay'),
             lastCalled: document.getElementById('lastCalled'),
             startPauseBtn: document.getElementById('startPauseBtn'),
             newGameBtn: document.getElementById('newGameBtn'),
@@ -78,28 +80,33 @@ class BingoCaller {
     }
 
     initializeGrid() {
-        const tbody = this.elements.bingoGrid;
-        tbody.innerHTML = '';
+        const board = this.elements.bingoGrid;
+        board.innerHTML = '';
 
-        // Create 15 rows of 5 numbers each (organized by columns B-I-N-G-O)
-        for (let row = 0; row < 15; row++) {
-            const tr = document.createElement('tr');
+        // Classic flashboard layout: one row per letter, 15 numbers across
+        const letters = ['B', 'I', 'N', 'G', 'O'];
 
-            for (let col = 0; col < 5; col++) {
-                const number = row + 1 + (col * 15);
-                const td = document.createElement('td');
-                const div = document.createElement('div');
+        letters.forEach((letter, rowIndex) => {
+            const row = document.createElement('div');
+            row.className = 'board-row';
+            row.dataset.letter = letter;
 
-                div.className = 'number-cell';
-                div.textContent = number;
-                div.dataset.number = number;
+            const letterTile = document.createElement('div');
+            letterTile.className = 'board-letter';
+            letterTile.textContent = letter;
+            row.appendChild(letterTile);
 
-                td.appendChild(div);
-                tr.appendChild(td);
+            for (let i = 1; i <= 15; i++) {
+                const number = rowIndex * 15 + i;
+                const cell = document.createElement('div');
+                cell.className = 'number-cell';
+                cell.textContent = number;
+                cell.dataset.number = number;
+                row.appendChild(cell);
             }
 
-            tbody.appendChild(tr);
-        }
+            board.appendChild(row);
+        });
     }
 
     initializeEventListeners() {
@@ -202,7 +209,7 @@ class BingoCaller {
         // Update last called number
         if (this.currentNumber) {
             this.lastNumber = this.currentNumber;
-            this.elements.lastCalled.textContent = `${this.getLetterForNumber(this.lastNumber)} - ${this.lastNumber}`;
+            this.elements.lastCalled.textContent = `${this.getLetterForNumber(this.lastNumber)}-${this.lastNumber}`;
         }
         
         // Set current number
@@ -214,6 +221,13 @@ class BingoCaller {
         const letter = this.getLetterForNumber(number);
         this.elements.currentNumber.textContent = number;
         this.elements.currentLetter.textContent = letter;
+
+        // Color the ball for this letter and replay its entrance
+        const ball = this.elements.ballDisplay;
+        ball.dataset.letter = letter;
+        ball.classList.remove('pop');
+        void ball.offsetWidth;
+        ball.classList.add('pop');
         
         // Update grid
         this.updateGrid();
@@ -272,8 +286,8 @@ class BingoCaller {
         // Main number display
         const numberSpan = document.createElement('span');
         numberSpan.className = 'log-number';
-        numberSpan.textContent = number;
-        
+        numberSpan.textContent = `${letter}-${number}`;
+
         // Sequence number display
         const sequenceSpan = document.createElement('span');
         sequenceSpan.className = 'log-sequence';
@@ -304,7 +318,7 @@ class BingoCaller {
     }
 
     speakNumber(letter, number) {
-        if (!('speechSynthesis' in window)) return Promise.resolve();
+        if (!('speechSynthesis' in window) || this.isMuted) return Promise.resolve();
 
         // Cancel any ongoing speech
         speechSynthesis.cancel();
@@ -336,41 +350,46 @@ class BingoCaller {
 
     async startGame() {
         if (this.availableNumbers.size === 0) {
-            alert('No more numbers to call! Start a new game.');
+            this.showToast('All 75 numbers have been called. Press New game to start over.');
             return;
         }
-        
+
         this.isPlaying = true;
-        this.elements.startPauseBtn.textContent = 'PAUSE';
-        this.elements.startPauseBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
-        
+        this.elements.startPauseBtn.textContent = 'Pause';
+        this.elements.startPauseBtn.classList.add('is-playing');
+
         // Show BINGO button when game starts
         this.elements.bingoWinnerBtn.classList.add('visible');
-        
+
         // Set up recursive function for subsequent numbers
         const callNextNumber = async () => {
             if (!this.isPlaying) return;
-            
+
             const nextNumber = this.getRandomNumber();
             if (nextNumber) {
                 await this.callNumber(nextNumber);
                 // Only schedule next call if still playing
                 if (this.isPlaying) {
-                    this.timeoutId = setTimeout(callNextNumber, Math.max(0, this.interval - 1000));
+                    // Speech adds roughly a second; when muted there is no
+                    // speech to wait for, so use the full interval
+                    const delay = this.isMuted
+                        ? this.interval
+                        : Math.max(0, this.interval - 1000);
+                    this.timeoutId = setTimeout(callNextNumber, delay);
                 }
             } else {
                 this.pauseGame();
             }
         };
-        
+
         // Start the recursive calling
         callNextNumber();
     }
 
     pauseGame() {
         this.isPlaying = false;
-        this.elements.startPauseBtn.textContent = 'START';
-        this.elements.startPauseBtn.style.background = 'linear-gradient(135deg, #00b09b, #96c93d)';
+        this.elements.startPauseBtn.textContent = 'Start';
+        this.elements.startPauseBtn.classList.remove('is-playing');
         
         // Clear any pending timeout
         if (this.timeoutId) {
@@ -396,9 +415,11 @@ class BingoCaller {
         }
 
         // Reset display
-        this.elements.currentNumber.textContent = 'Ready to Start';
+        this.elements.currentNumber.textContent = '–';
         this.elements.currentLetter.textContent = '';
-        this.elements.lastCalled.textContent = 'None';
+        this.elements.lastCalled.textContent = '—';
+        this.elements.ballDisplay.dataset.letter = '';
+        this.elements.ballDisplay.classList.remove('pop');
 
         // Hide BINGO button when starting new game
         this.elements.bingoWinnerBtn.classList.remove('visible');
@@ -425,8 +446,16 @@ class BingoCaller {
     }
 
     toggleMute() {
-        const isMuted = this.elements.muteBtn.classList.toggle('muted');
-        this.elements.muteBtn.textContent = isMuted ? '🔊' : '🔇';
+        this.isMuted = !this.isMuted;
+        this.elements.muteBtn.classList.toggle('muted', this.isMuted);
+        this.elements.muteBtn.textContent = this.isMuted ? '🔇' : '🔊';
+        this.elements.muteBtn.setAttribute('aria-label',
+            this.isMuted ? 'Unmute the caller voice' : 'Mute the caller voice');
+
+        // Stop any call that is mid-announcement
+        if (this.isMuted && 'speechSynthesis' in window) {
+            speechSynthesis.cancel();
+        }
     }
 
     gameComplete() {
@@ -443,8 +472,21 @@ class BingoCaller {
 
         // Show completion message
         setTimeout(() => {
-            alert('🎉 Game Complete! All 75 numbers have been called. Click "NEW GAME" to start over.');
+            this.showToast('🎉 All 75 numbers have been called! Press New game to play again.');
         }, 1500);
+    }
+
+    showToast(text) {
+        const existing = document.querySelector('.hall-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'hall-toast';
+        toast.setAttribute('role', 'status');
+        toast.textContent = text;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 4000);
     }
 
     celebrateWinner() {
@@ -558,6 +600,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (!window.bingoCaller) return;
+
+    // Don't hijack keys while typing in the settings form
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
 
     switch (e.key) {
         case ' ': // Spacebar to start/pause
