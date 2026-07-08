@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Disable roll button during animation
         rollDiceBtn.disabled = true;
+        rollDiceBtn.textContent = 'Rolling…';
 
         // Decide the result FIRST — the animation is purely cosmetic
         diceResults = [];
@@ -112,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayResult();
         highlightMatches();
 
+        rollDiceBtn.textContent = 'Roll Dice';
         rollDiceBtn.disabled = false;
         isRolling = false;
     }
@@ -298,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resultMessage.textContent = resultText;
         
         // Add to history
-        addToHistory(`Roll result: ${diceResults.join(', ')}`);
+        addToHistory(diceResults);
     }
     
     function updateStatistics() {
@@ -320,14 +322,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function addToHistory(text) {
+    function addToHistory(rollColors) {
         const li = document.createElement('li');
-        li.textContent = text;
-        
+
+        // One chip per die, in roll order
+        const chips = document.createElement('span');
+        chips.className = 'roll-chips';
+        rollColors.forEach(color => {
+            const chip = document.createElement('span');
+            chip.className = `chip ${color}`;
+            chip.title = color;
+            chips.appendChild(chip);
+        });
+        li.appendChild(chips);
+
         // Add timestamp
-        const timestamp = new Date().toLocaleTimeString();
         const timeSpan = document.createElement('span');
-        timeSpan.textContent = ` [${timestamp}]`;
+        timeSpan.textContent = new Date().toLocaleTimeString();
         timeSpan.className = 'timestamp';
         li.appendChild(timeSpan);
         

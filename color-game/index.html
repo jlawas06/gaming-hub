@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Dice Game</title>
+    <title>Color Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="bunting" aria-hidden="true"></div>
     <div class="container">
-        <h1>Color Dice Game</h1>
+        <header class="site-header">
+            <p class="eyebrow">Perya Classic</p>
+            <h1>Color Game</h1>
+        </header>
 
         <div class="game-layout">
         <div class="stats-section">
-            <h3>Color Statistics</h3>
+            <h3>Color Board</h3>
             <div class="stats-grid">
                 <div class="color-stat red">
                     <span class="color-name">Red</span>
@@ -43,6 +50,7 @@
         </div>
 
         <div class="game-section">
+            <div class="dice-stage">
             <div class="dice-container" id="diceContainer">
                 <div class="die-scene">
                     <div class="die-shadow"></div>
@@ -85,13 +93,14 @@
                 </div>
             </div>
             
+            <div class="result-section">
+                <p id="resultMessage" aria-live="polite"></p>
+            </div>
+            </div>
+
             <div class="controls">
                 <button id="rollDiceBtn">Roll Dice</button>
                 <button id="resetStatsBtn">Reset Stats</button>
-            </div>
-
-            <div class="result-section">
-                <p id="resultMessage"></p>
             </div>
         </div>
 
