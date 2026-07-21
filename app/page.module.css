@@ -1,0 +1,329 @@
+/* ==========================================================================
+   JL Gaming Hub — midway at night
+   Palette and type carried over from the color-game booth so the whole
+   hub reads as one fairground.
+   ========================================================================== */
+
+.page {
+    --night: #201038;
+    --night-deep: #150a26;
+    --night-glow: #35204f;
+    --canvas: #fbf3e2;
+    --canvas-shade: #f1e5cc;
+    --ink: #3a2415;
+    --ink-soft: #6f5136;
+    --bulb: #ffc857;
+    --bulb-deep: #b97b1a;
+    --felt: #1d6f4c;
+    --felt-deep: #124a33;
+    --claret: #a32638;
+    --claret-deep: #741a28;
+    --amber: #f2960f;
+    --amber-deep: #b56d00;
+    --dice-red: #e74c3c;
+    --dice-green: #2ecc71;
+    --dice-blue: #3498db;
+    --dice-yellow: #f1c40f;
+    --dice-pink: #ff69b4;
+
+    --font-display: var(--font-alfa), 'Arial Black', sans-serif;
+    --font-body: var(--font-nunito), 'Trebuchet MS', sans-serif;
+
+    font-family: var(--font-body);
+    line-height: 1.6;
+    color: var(--canvas);
+    background:
+        radial-gradient(ellipse 120% 60% at 50% -10%, var(--night-glow), transparent 70%),
+        radial-gradient(1px 1px at 18% 22%, rgba(251, 243, 226, 0.35) 50%, transparent 51%),
+        radial-gradient(1px 1px at 71% 12%, rgba(251, 243, 226, 0.3) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 42% 8%, rgba(251, 243, 226, 0.25) 50%, transparent 51%),
+        radial-gradient(1px 1px at 88% 31%, rgba(251, 243, 226, 0.3) 50%, transparent 51%),
+        linear-gradient(var(--night), var(--night-deep));
+    background-color: var(--night-deep);
+    min-height: 100dvh;
+}
+
+.midway {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 4rem 1.25rem 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Marquee header ---------------------------------------------------------- */
+
+.marquee {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+
+.marquee-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--bulb);
+    margin-bottom: 0.75rem;
+}
+
+.marquee-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 8.5vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--canvas);
+    text-shadow:
+        0 3px 0 var(--bulb-deep),
+        0 6px 24px rgba(255, 200, 87, 0.25);
+}
+
+/* A string of marquee bulbs under the wordmark */
+.bulb-string {
+    width: min(320px, 70%);
+    height: 8px;
+    margin: 1.1rem auto 0.9rem;
+    background-image: radial-gradient(circle 3px at 50% 50%, var(--bulb) 97%, transparent 100%);
+    background-size: 24px 8px;
+    background-repeat: repeat-x;
+    background-position: center;
+    filter: drop-shadow(0 0 6px rgba(255, 200, 87, 0.7));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .bulb-string {
+        animation: bulb-chase 1.6s steps(2) infinite;
+    }
+
+    @keyframes bulb-chase {
+        to { background-position-x: 24px; }
+    }
+}
+
+/* Booths ------------------------------------------------------------------ */
+
+.marquee-subtitle {
+    font-size: 1.05rem;
+    color: rgba(251, 243, 226, 0.75);
+}
+
+.booths {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+.booth {
+    background: var(--canvas);
+    color: var(--ink);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.booth:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 22px 44px rgba(0, 0, 0, 0.45),
+        0 0 0 2px var(--bulb),
+        0 0 30px rgba(255, 200, 87, 0.25);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .booth {
+        animation: booth-arrive 0.6s ease-out both;
+    }
+
+    .booth:nth-child(2) { animation-delay: 0.12s; }
+    .booth:nth-child(3) { animation-delay: 0.24s; }
+    .booth:nth-child(4) { animation-delay: 0.36s; }
+
+    @keyframes booth-arrive {
+        from {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+    }
+}
+
+/* Scalloped awning: striped canopy + hanging half-circles, colored per game */
+
+.awning {
+    height: 26px;
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--awning-a) 0 28px,
+        var(--canvas) 28px 56px
+    );
+    position: relative;
+}
+
+.awning::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 13px;
+    background-image:
+        radial-gradient(circle 14px at 14px 0, var(--awning-a) 97%, transparent 100%),
+        radial-gradient(circle 14px at 42px 0, var(--canvas-shade) 97%, transparent 100%);
+    background-size: 56px 13px;
+    background-repeat: repeat-x;
+}
+
+.booth-bingo { --awning-a: var(--felt); }
+.booth-cards { --awning-a: var(--amber); }
+.booth-deal  { --awning-a: var(--claret); }
+
+/* The dice booth flies every color it plays with */
+.booth-dice .awning {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--dice-red) 0 28px,
+        var(--canvas) 28px 56px,
+        var(--dice-blue) 56px 84px,
+        var(--canvas) 84px 112px,
+        var(--dice-yellow) 112px 140px,
+        var(--canvas) 140px 168px,
+        var(--dice-green) 168px 196px,
+        var(--canvas) 196px 224px,
+        var(--dice-pink) 224px 252px,
+        var(--canvas) 252px 280px
+    );
+}
+
+.booth-dice .awning::after {
+    background-image:
+        radial-gradient(circle 14px at 14px 0, var(--dice-red) 97%, transparent 100%),
+        radial-gradient(circle 14px at 70px 0, var(--dice-blue) 97%, transparent 100%),
+        radial-gradient(circle 14px at 126px 0, var(--dice-yellow) 97%, transparent 100%),
+        radial-gradient(circle 14px at 182px 0, var(--dice-green) 97%, transparent 100%),
+        radial-gradient(circle 14px at 238px 0, var(--dice-pink) 97%, transparent 100%),
+        radial-gradient(circle 14px at 42px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 98px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 154px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 210px 0, var(--canvas-shade) 97%, transparent 100%),
+        radial-gradient(circle 14px at 266px 0, var(--canvas-shade) 97%, transparent 100%);
+    background-size: 280px 13px;
+}
+
+/* Booth interior ----------------------------------------------------------- */
+
+.booth-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 2.2rem 1.75rem 1.75rem;
+    text-align: center;
+}
+
+.booth-token {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 1.1rem;
+    display: grid;
+    place-items: center;
+    font-size: 2.1rem;
+    background: radial-gradient(circle at 35% 30%, var(--bulb), var(--bulb-deep));
+    border-radius: 50%;
+    box-shadow:
+        inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+        0 4px 10px rgba(58, 36, 21, 0.3);
+}
+
+.booth-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.55rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+}
+
+.booth-description {
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    margin-bottom: 1.25rem;
+}
+
+.booth-facts {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-top: 2px dashed rgba(58, 36, 21, 0.2);
+    padding-top: 1rem;
+    margin-top: auto;
+    margin-bottom: 1.25rem;
+}
+
+.booth-play {
+    display: block;
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-align: center;
+    color: var(--canvas);
+    background: linear-gradient(var(--play-a), var(--play-b));
+    border-radius: 10px;
+    box-shadow: 0 4px 0 var(--play-b);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.booth-bingo .booth-play { --play-a: var(--felt);   --play-b: var(--felt-deep); }
+.booth-cards .booth-play { --play-a: var(--amber);  --play-b: var(--amber-deep); }
+.booth-dice  .booth-play { --play-a: var(--dice-blue); --play-b: #21618c; }
+.booth-deal  .booth-play { --play-a: var(--claret); --play-b: var(--claret-deep); }
+
+.booth-play:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--play-b), 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.booth-play:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--play-b);
+}
+
+.booth-play:focus-visible {
+    outline: 3px solid var(--bulb);
+    outline-offset: 3px;
+}
+
+/* Footer ------------------------------------------------------------------- */
+
+.midway-footer {
+    text-align: center;
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    font-size: 0.85rem;
+    color: rgba(251, 243, 226, 0.5);
+}
+
+/* Responsive ---------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+    .midway {
+        padding-top: 2.5rem;
+    }
+
+    .marquee {
+        margin-bottom: 2.5rem;
+    }
+
+    .booths {
+        gap: 1.5rem;
+    }
+
+    .booth-body {
+        padding: 1.9rem 1.4rem 1.4rem;
+    }
+}
