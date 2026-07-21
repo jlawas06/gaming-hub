@@ -9,6 +9,8 @@ class DealOrNoDeal {
         this.gameOver = false;
         this.gameStarted = false;
         this.canMakeDeal = false;
+        this.dealAccepted = false;
+        this.acceptedOffer = 0;
         this.defaultHighValues = [50, 100, 200];
         this.defaultRegularValues = Array.from({length: 23}, (_,i) => i + 1);
         // Load settings from localStorage if available
@@ -22,6 +24,19 @@ class DealOrNoDeal {
     }
 
     initializeGame() {
+        // Reset grids for a new game
+        document.querySelector('.cases-grid').innerHTML = '';
+        document.querySelector('.prizes-grid').innerHTML = '';
+        
+        // Hide restart button, reset controls
+        document.getElementById('restart-btn').style.display = 'none';
+        document.getElementById('deal-btn').style.display = 'block';
+        document.getElementById('no-deal-btn').style.display = 'block';
+        this.unhighlightDealButtons();
+        document.querySelector('.game-controls').style.display = 'none';
+        document.getElementById('player-case').textContent = '?';
+        document.querySelector('.offer-amount').textContent = '₱0';
+
         // Create array of values with specific high values and the rest between 0.50 and 20.00
         const values = [...this.highValues, ...this.regularValues];
         
@@ -53,6 +68,8 @@ class DealOrNoDeal {
         const saveSettingsBtn = document.getElementById('save-settings');
         const cancelSettingsBtn = document.getElementById('cancel-settings');
         const restoreDefaultsBtn = document.getElementById('restore-defaults');
+        const restartBtn = document.getElementById('restart-btn');
+        const celebrationCloseBtn = document.getElementById('celebration-close-btn');
 
         dealBtn.addEventListener('click', () => this.makeDeal());
         noDealBtn.addEventListener('click', () => this.noDeal());
@@ -62,6 +79,10 @@ class DealOrNoDeal {
         saveSettingsBtn.addEventListener('click', () => this.saveSettings());
         cancelSettingsBtn.addEventListener('click', () => this.hideSettingsPopup());
         restoreDefaultsBtn.addEventListener('click', () => this.restoreDefaults());
+        restartBtn.addEventListener('click', () => this.restartGame());
+        celebrationCloseBtn.addEventListener('click', () => {
+            document.getElementById('celebration-popup').classList.remove('active');
+        });
     }
 
     initializeSettings() {
@@ -120,6 +141,8 @@ class DealOrNoDeal {
         this.gameOver = false;
         this.gameStarted = false;
         this.canMakeDeal = false;
+        this.dealAccepted = false;
+        this.acceptedOffer = 0;
 
         // Reinitialize the game with new values
         this.initializeGame();
@@ -129,55 +152,82 @@ class DealOrNoDeal {
 
     renderCases() {
         const casesGrid = document.querySelector('.cases-grid');
-        casesGrid.innerHTML = '';
+        
+        if (casesGrid.children.length === 0) {
+            this.cases.forEach(case_ => {
+                const caseElement = document.createElement('button');
+                caseElement.type = 'button';
+                caseElement.className = 'case';
+                caseElement.dataset.caseNumber = case_.number;
+                
+                caseElement.addEventListener('click', () => {
+                    if (!this.gameStarted) {
+                        this.selectPlayerCase(case_.number);
+                    } else {
+                        this.openCase(case_.number);
+                    }
+                });
+                
+                casesGrid.appendChild(caseElement);
+            });
+        }
 
-        this.cases.forEach(case_ => {
-            const caseElement = document.createElement('button');
-            caseElement.type = 'button';
-            caseElement.className = `case ${case_.opened ? 'opened' : ''} ${case_.number === this.playerCase ? 'selected' : ''}`;
-            caseElement.textContent = case_.opened ? `₱${case_.value}` : case_.number;
-            caseElement.dataset.caseNumber = case_.number;
-
-            if (!case_.opened) {
-                if (!this.gameStarted) {
-                    caseElement.setAttribute('aria-label', `Pick case ${case_.number} as your case`);
-                    caseElement.addEventListener('click', () => this.selectPlayerCase(case_.number));
-                } else if (case_.number !== this.playerCase) {
-                    caseElement.setAttribute('aria-label', `Open case ${case_.number}`);
-                    caseElement.addEventListener('click', () => this.openCase(case_.number));
-                } else {
-                    caseElement.disabled = true;
-                    caseElement.setAttribute('aria-label', `Case ${case_.number}, your case`);
-                }
-            } else {
+        const caseElements = casesGrid.querySelectorAll('.case');
+        caseElements.forEach(caseElement => {
+            const caseNumber = parseInt(caseElement.dataset.caseNumber);
+            const case_ = this.cases.find(c => c.number === caseNumber);
+            
+            if (case_.opened) {
+                // Keep .revealed if it's there
+                const hasRevealed = caseElement.classList.contains('revealed');
+                caseElement.className = `case opened ${hasRevealed ? 'revealed' : ''}`;
+                caseElement.textContent = `₱${case_.value}`;
                 caseElement.disabled = true;
                 caseElement.setAttribute('aria-label', `Case ${case_.number}, opened, contained ₱${case_.value}`);
+            } else if (case_.number === this.playerCase) {
+                caseElement.className = `case selected`;
+                caseElement.textContent = case_.number;
+                caseElement.disabled = true;
+                caseElement.setAttribute('aria-label', `Case ${case_.number}, your case`);
+            } else {
+                caseElement.className = `case`;
+                caseElement.textContent = case_.number;
+                caseElement.disabled = false;
+                if (!this.gameStarted) {
+                    caseElement.setAttribute('aria-label', `Pick case ${case_.number} as your case`);
+                } else {
+                    caseElement.setAttribute('aria-label', `Open case ${case_.number}`);
+                }
             }
-
-            casesGrid.appendChild(caseElement);
         });
     }
 
     renderPrizes() {
         const prizesGrid = document.querySelector('.prizes-grid');
-        prizesGrid.innerHTML = '';
-
-        // Show all prizes (including duplicates), sorted by value
         const sortedCases = [...this.cases].sort((a, b) => a.value - b.value);
-        sortedCases.forEach((case_, idx) => {
-            const prizeElement = document.createElement('div');
-            prizeElement.className = 'prize-item';
-            if (!case_.opened) {
-                prizeElement.classList.add('unopened');
-            } else {
-                prizeElement.classList.add('opened');
-            }
-            const valueElement = document.createElement('div');
-            valueElement.className = 'prize-value';
-            valueElement.textContent = `₱${case_.value}`;
-            prizeElement.appendChild(valueElement);
-            prizesGrid.appendChild(prizeElement);
-        });
+
+        if (prizesGrid.children.length === 0) {
+            sortedCases.forEach((case_, idx) => {
+                const prizeElement = document.createElement('div');
+                prizeElement.className = 'prize-item unopened';
+                const valueElement = document.createElement('div');
+                valueElement.className = 'prize-value';
+                valueElement.textContent = `₱${case_.value}`;
+                prizeElement.appendChild(valueElement);
+                prizesGrid.appendChild(prizeElement);
+            });
+        } else {
+            const prizeElements = Array.from(prizesGrid.children);
+            sortedCases.forEach((case_, idx) => {
+                if (case_.opened) {
+                    prizeElements[idx].classList.remove('unopened');
+                    prizeElements[idx].classList.add('opened');
+                } else {
+                    prizeElements[idx].classList.add('unopened');
+                    prizeElements[idx].classList.remove('opened');
+                }
+            });
+        }
     }
 
     updateCasesCounter() {
@@ -223,7 +273,11 @@ class DealOrNoDeal {
             this.canMakeDeal = true;
             const offer = this.updateBankerOffer();
             // Give the reveal a beat before the banker calls
-            setTimeout(() => this.showDealPopup(offer), 900);
+            if (!this.dealAccepted) {
+                setTimeout(() => this.showDealPopup(offer), 900);
+            } else {
+                setTimeout(() => this.nextRound(), 900);
+            }
         }
     }
 
@@ -242,11 +296,7 @@ class DealOrNoDeal {
             offer = Math.floor(averageValue * roundMultiplier);
         }
         
-        // Cap the maximum offer at 50
-        const cappedOffer = Math.min(offer, 50);
-        
-        // Round to nearest whole number
-        const roundedOffer = Math.round(cappedOffer);
+        const roundedOffer = Math.round(offer);
         
         document.querySelector('.offer-amount').textContent = `₱${roundedOffer}`;
         return roundedOffer;
@@ -265,7 +315,8 @@ class DealOrNoDeal {
             if (unopenedCases.length === 2) {
                 this.finalRound();
             } else {
-                this.updateMessage(`Round ${this.currentRound}: Open ${this.casesToOpen} cases`);
+                const prefix = this.dealAccepted ? `You dealt for ₱${this.acceptedOffer}. ` : `Round ${this.currentRound}: `;
+                this.updateMessage(`${prefix}Open ${this.casesToOpen} cases`);
             }
         } else {
             this.finalRound();
@@ -275,20 +326,25 @@ class DealOrNoDeal {
     finalRound() {
         const unopenedCases = this.cases.filter(c => !c.opened);
         if (unopenedCases.length === 2) {
-            this.updateMessage("Final round! You can switch your case or keep it. Make your decision!");
-            const dealBtn = document.getElementById('deal-btn');
-            const noDealBtn = document.getElementById('no-deal-btn');
-            
-            // Reset button states
-            dealBtn.disabled = false;
-            noDealBtn.disabled = false;
-            dealBtn.textContent = "Keep case";
-            noDealBtn.textContent = "Switch case";
-            
-            // Remove any existing classes and add active class
-            dealBtn.className = 'btn deal active';
-            noDealBtn.className = 'btn no-deal active';
-            document.querySelector('.game-controls').style.display = 'flex';
+            if (this.dealAccepted) {
+                this.updateMessage(`Final cases! Let's see what was in your case!`);
+                setTimeout(() => this.endGame(), 1500);
+            } else {
+                this.updateMessage("Final round! You can switch your case or keep it. Make your decision!");
+                const dealBtn = document.getElementById('deal-btn');
+                const noDealBtn = document.getElementById('no-deal-btn');
+                
+                // Reset button states
+                dealBtn.disabled = false;
+                noDealBtn.disabled = false;
+                dealBtn.textContent = "Keep case";
+                noDealBtn.textContent = "Switch case";
+                
+                // Remove any existing classes and add active class
+                dealBtn.className = 'btn deal active';
+                noDealBtn.className = 'btn no-deal active';
+                document.querySelector('.game-controls').style.display = 'flex';
+            }
         } else {
             this.endGame();
         }
@@ -330,19 +386,10 @@ class DealOrNoDeal {
             this.endGame();
         } else {
             const offer = parseFloat(document.querySelector('.offer-amount').textContent.replace('₱', ''));
-            this.gameOver = true;
-            
-            // Reveal the selected case
-            const playerCase = this.cases.find(c => c.number === this.playerCase);
-            if (playerCase) {
-                playerCase.opened = true;
-                this.updateMessage(`Congratulations! You've won ₱${offer}! Your case contained ₱${playerCase.value}.`);
-                this.renderCases();
-            } else {
-                this.updateMessage(`Congratulations! You've won ₱${offer}!`);
-            }
-            
-            this.disableControls();
+            this.dealAccepted = true;
+            this.acceptedOffer = offer;
+            this.updateMessage(`You accepted ₱${offer}! Let's play it out.`);
+            setTimeout(() => this.nextRound(), 1500);
         }
     }
 
@@ -381,13 +428,52 @@ class DealOrNoDeal {
         playerCase.opened = true;
         if (otherCase) {
             otherCase.opened = true;
-            this.updateMessage(`Game Over! Your case contained ₱${playerCase.value} and the other case contained ₱${otherCase.value}!`);
+        }
+
+        let title, subtitle, amount, message;
+
+        if (this.dealAccepted) {
+            amount = this.acceptedOffer;
+            const diff = this.acceptedOffer - playerCase.value;
+            if (diff >= 0) {
+                title = "Good deal!";
+                subtitle = "You took the Banker's offer:";
+                message = `Your case only had ₱${playerCase.value}. You made the right choice!`;
+            } else {
+                title = "Bad deal!";
+                subtitle = "You took the Banker's offer:";
+                message = `Your case had ₱${playerCase.value}. The banker got you!`;
+            }
+            this.updateMessage(`${title} ${message}`);
         } else {
-            this.updateMessage(`Game Over! Your case contained ₱${playerCase.value}!`);
+            amount = playerCase.value;
+            title = "Congratulations!";
+            subtitle = "You won what was in your case:";
+            if (otherCase) {
+                message = `The other case contained ₱${otherCase.value}.`;
+                this.updateMessage(`Game Over! Your case contained ₱${playerCase.value} and the other case contained ₱${otherCase.value}!`);
+            } else {
+                message = "";
+                this.updateMessage(`Game Over! Your case contained ₱${playerCase.value}!`);
+            }
         }
         
         this.renderCases();
         this.disableControls();
+
+        // Delay popup slightly for suspense
+        setTimeout(() => {
+            this.showCelebrationPopup(title, subtitle, amount, message);
+        }, 1200);
+    }
+
+    showCelebrationPopup(title, subtitle, amount, message) {
+        const popup = document.getElementById('celebration-popup');
+        document.getElementById('celebration-title').textContent = title;
+        document.getElementById('celebration-subtitle').textContent = subtitle;
+        document.getElementById('celebration-amount').textContent = `₱${amount}`;
+        document.getElementById('celebration-message').textContent = message;
+        popup.classList.add('active');
     }
 
     updateMessage(message) {
@@ -395,8 +481,32 @@ class DealOrNoDeal {
     }
 
     disableControls() {
-        document.getElementById('deal-btn').disabled = true;
-        document.getElementById('no-deal-btn').disabled = true;
+        document.getElementById('deal-btn').style.display = 'none';
+        document.getElementById('no-deal-btn').style.display = 'none';
+        document.getElementById('restart-btn').style.display = 'block';
+        document.querySelector('.game-controls').style.display = 'flex';
+    }
+
+    restartGame() {
+        this.playerCase = null;
+        this.remainingCases = 26;
+        this.currentRound = 1;
+        this.casesToOpen = this.rounds[0];
+        this.gameOver = false;
+        this.gameStarted = false;
+        this.canMakeDeal = false;
+        this.dealAccepted = false;
+        this.acceptedOffer = 0;
+        
+        // Reset button texts that might have changed in final round
+        const dealBtn = document.getElementById('deal-btn');
+        const noDealBtn = document.getElementById('no-deal-btn');
+        dealBtn.textContent = "Deal";
+        noDealBtn.textContent = "No deal";
+        dealBtn.className = 'btn deal';
+        noDealBtn.className = 'btn no-deal';
+        
+        this.initializeGame();
     }
 
     highlightDealButtons() {

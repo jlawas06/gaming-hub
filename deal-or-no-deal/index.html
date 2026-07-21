@@ -44,6 +44,7 @@
                 <div class="game-controls">
                     <button id="deal-btn" class="btn deal">Deal</button>
                     <button id="no-deal-btn" class="btn no-deal">No deal</button>
+                    <button id="restart-btn" class="btn deal" style="display: none;">Play Again</button>
                 </div>
             </div>
 
@@ -94,6 +95,18 @@
                     <button id="cancel-settings" class="btn btn-plain">Cancel</button>
                     <button id="save-settings" class="btn deal">Save settings</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="celebration-popup" class="popup">
+        <div class="popup-content banker-card">
+            <p class="banker-eyebrow" id="celebration-subtitle">You won:</p>
+            <h2 id="celebration-title" style="margin-bottom: 0.5rem;">Congratulations!</h2>
+            <p class="popup-offer" id="celebration-amount" style="margin-bottom: 0.5rem; margin-top: 0.5rem;">₱0</p>
+            <p id="celebration-message" style="color: rgba(251, 243, 226, 0.8); margin-bottom: 1.5rem;"></p>
+            <div class="popup-buttons">
+                <button id="celebration-close-btn" class="btn deal">Close</button>
             </div>
         </div>
     </div>
